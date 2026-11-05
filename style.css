@@ -1,0 +1,268 @@
+/* ==========================================================================
+   Frankfurt RP – Stylesheet
+   Alles kommt von dieser Domain: keine Google-Schriften, keine externen
+   Skripte, keine Cookies.
+   Farben: Rot #fa3019, Balken #ff0000, Text #f9f9f9
+   ========================================================================== */
+
+:root {
+  --red: #fa3019;
+  --red-bright: #ff6a55;
+  --bar: #ff0000;
+  --text: #f9f9f9;
+  --muted: #cfcfcf;
+  --bg: #0b0b0e;
+  --panel: rgba(8, 8, 11, 0.84);
+  --line: rgba(250, 48, 25, 0.4);
+  --radius: 4px;
+  --maxw: 1015px;
+  /* Montserrat wird genutzt, wenn sie lokal vorhanden ist, sonst die Systemschrift. */
+  --font: Montserrat, "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font: 16px/1.65 var(--font);
+  color: var(--text);
+  background:
+    linear-gradient(rgba(6, 6, 9, 0.9), rgba(6, 6, 9, 0.95)),
+    url("bild-frankfurt-rp-banner-1024.jpg") center top / cover no-repeat,
+    var(--bg);
+  background-attachment: fixed;
+}
+
+@media (min-width: 1100px) {
+  body {
+    background:
+      linear-gradient(rgba(6, 6, 9, 0.9), rgba(6, 6, 9, 0.95)),
+      url("bild-frankfurt-rp-banner-2048.jpg") center top / cover no-repeat,
+      var(--bg);
+    background-attachment: fixed;
+  }
+}
+
+img { display: block; max-width: 100%; height: auto; }
+
+a { color: var(--red); transition: background-color .15s, color .15s, border-color .15s; }
+a:hover { color: var(--red-bright); }
+:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition: none !important; }
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0; border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.skip {
+  position: absolute; left: 8px; top: -60px; z-index: 100;
+  padding: 8px 14px;
+  background: #fff; color: #000;
+  border-radius: var(--radius);
+}
+.skip:focus { top: 8px; }
+
+/* ---------- Obere rote Leiste ---------- */
+.topbar {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+  gap: 10px 16px;
+  padding: 10px 16px;
+  background: var(--bar);
+  color: #000;
+}
+.topbar p { margin: 0; }
+.topbar a {
+  padding: 6px 14px;
+  border: 1px solid #000; border-radius: var(--radius);
+  color: #000; text-decoration: none; letter-spacing: .25px;
+}
+.topbar a:hover, .topbar a:focus-visible { background: #000; color: #fff; }
+
+/* ---------- Kopfzeile ---------- */
+.site-header {
+  position: sticky; top: 0; z-index: 10;
+  background: rgba(0, 0, 0, 0.78);
+  border-bottom: 1px solid var(--line);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
+.site-header .inner {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: 6px 24px;
+  max-width: var(--maxw); margin: 0 auto; padding: 8px 16px;
+}
+.brand {
+  display: flex; align-items: center; gap: 12px;
+  color: var(--text); text-decoration: none;
+  font-size: 1.15rem; font-weight: 500;
+}
+.brand:hover { color: var(--text); }
+.brand img { width: 48px; height: 48px; }
+.nav { display: flex; flex-wrap: wrap; gap: 4px 22px; }
+.nav a {
+  padding: 6px 2px;
+  border-bottom: 2px solid transparent;
+  color: var(--text); text-decoration: none;
+}
+.nav a:hover, .nav a[aria-current="page"] { border-bottom-color: var(--red); color: var(--text); }
+
+/* ---------- Banner ---------- */
+.hero-img { width: 100%; max-height: 460px; object-fit: cover; object-position: 50% 55%; }
+
+.hero {
+  position: relative; isolation: isolate;
+  display: grid; place-items: center; text-align: center;
+  min-height: clamp(120px, 17vw, 190px);
+  background: #000 url("bild-hero-strip-1024.jpg") center / cover no-repeat;
+}
+.hero::before { content: ""; position: absolute; inset: 0; z-index: -1; background: rgba(0, 0, 0, 0.42); }
+@media (min-width: 900px) {
+  .hero { background-image: url("bild-hero-strip-2048.jpg"); }
+}
+.hero h1 {
+  margin: 0; padding: 0 16px;
+  font-size: clamp(1.7rem, 4.6vw, 2.5rem); font-weight: 700; letter-spacing: .01em;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.85);
+}
+
+/* ---------- Startseite: Karten mit Banner ---------- */
+.home { max-width: var(--maxw); margin: 0 auto; padding: 28px 16px 0; display: grid; gap: 28px; }
+.showcase {
+  overflow: hidden;
+  background: var(--panel);
+  border: 1px solid var(--line); border-radius: 8px;
+}
+.rule-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+  margin: 0; padding: clamp(14px, 3vw, 24px); list-style: none;
+}
+.btn {
+  display: block; padding: 12px 14px;
+  border: 1px solid var(--red); border-radius: var(--radius);
+  background: rgba(0, 0, 0, 0.45);
+  color: var(--red); text-align: center; text-decoration: none;
+}
+.btn:hover, .btn:focus-visible { background: var(--red); color: #fff; }
+
+.social {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 28px;
+  margin: 0; padding: 24px 16px; list-style: none;
+}
+.social a {
+  display: grid; place-items: center;
+  width: 56px; height: 56px; border-radius: 50%;
+  transition: transform .15s;
+}
+.social a:hover, .social a:focus-visible { transform: scale(1.1); }
+.social svg { width: 28px; height: 28px; fill: #fff; }
+.social .tiktok { background: #000; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35); }
+.social .discord { background: #5865f2; }
+.social .youtube { background: #f00; }
+
+/* ---------- Unterseiten ---------- */
+.page { max-width: 900px; margin: 0 auto; padding: 28px 16px 24px; }
+.panel {
+  padding: clamp(18px, 3.4vw, 34px);
+  background: var(--panel);
+  border: 1px solid rgba(255, 255, 255, 0.09); border-radius: 8px;
+}
+.back {
+  display: inline-block; margin: 0 0 14px; padding: 6px 14px;
+  border: 1px solid var(--red); border-radius: var(--radius);
+  text-decoration: none;
+}
+.back:hover, .back:focus-visible { background: var(--red); color: #fff; }
+
+.subnav { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 22px; padding: 0; list-style: none; }
+.subnav a {
+  display: inline-block; padding: 4px 12px;
+  border: 1px solid var(--line); border-radius: 999px;
+  color: var(--text); font-size: .88rem; text-decoration: none;
+}
+.subnav a:hover { border-color: var(--red); color: var(--red-bright); }
+.subnav a[aria-current="page"] { background: var(--red); border-color: var(--red); color: #fff; }
+
+.doc-title { margin: 0 0 18px; color: var(--muted); font-size: 1.05rem; }
+.prose h2 {
+  margin: 32px 0 12px; padding-bottom: 6px;
+  border-bottom: 1px solid var(--line);
+  font-size: 1.2rem; line-height: 1.3;
+}
+.prose .doc-title + h2, .prose section:first-of-type > h2 { margin-top: 0; }
+.prose h3 { margin: 22px 0 8px; font-size: 1.05rem; }
+.prose p { margin: 0 0 12px; }
+.num { color: var(--red); font-weight: 700; }
+
+.rules { margin: 0; padding: 0; list-style: none; }
+.rules > li { display: grid; grid-template-columns: 3.1em 1fr; gap: 0 .4em; margin: 0 0 12px; }
+.examples { margin: 6px 0 0; padding-left: 1.2em; color: var(--muted); }
+.examples li { margin: 2px 0; }
+
+.doc-meta { margin: -8px 0 18px; color: var(--muted); font-size: .9rem; }
+.prose h4 { margin: 18px 0 6px; font-size: .98rem; font-weight: 600; }
+.prose a { color: var(--red-bright); }
+.prose address { margin: 0 0 12px; font-style: normal; }
+.prose .note {
+  margin: 0 0 14px; padding: 10px 14px;
+  border-left: 3px solid var(--red); border-radius: 0 var(--radius) var(--radius) 0;
+  background: rgba(250, 48, 25, 0.08);
+}
+.prose .closing {
+  margin: 28px 0 0; padding-top: 14px;
+  border-top: 1px solid var(--line);
+  color: var(--muted); font-size: .92rem;
+}
+.sublist { margin: 6px 0 0; padding-left: 1.2em; }
+.sublist li { margin: 2px 0; }
+.plain { margin: 0 0 12px; padding-left: 1.3em; }
+.plain li { margin: 4px 0; }
+
+/* Team */
+.team {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px;
+  margin: 0; padding: clamp(14px, 3vw, 24px);
+}
+.member { padding: 14px 16px; background: rgba(0, 0, 0, 0.35); border: 1px solid var(--line); border-radius: 6px; }
+.member dt { color: var(--red); font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; }
+.member dd { margin: 4px 0 0; font-size: 1.15rem; font-weight: 600; }
+
+/* ---------- Fußzeile ---------- */
+.site-footer { margin-top: 40px; }
+.footer-links {
+  display: flex; flex-wrap: wrap; justify-content: space-around; gap: 8px 24px;
+  padding: 18px 16px;
+  background: #111116; border-top: 1px solid var(--line);
+}
+.footer-links a { color: var(--text); text-decoration: none; }
+.footer-links a:hover, .footer-links a:focus-visible { color: var(--red-bright); text-decoration: underline; }
+
+.disclaimer {
+  position: relative; isolation: isolate;
+  background: #000 url("bild-frankfurt-rp-banner-1024.jpg") center / cover no-repeat;
+}
+.disclaimer::before { content: ""; position: absolute; inset: 0; z-index: -1; background: rgba(0, 0, 0, 0.8); }
+.disclaimer .inner { max-width: var(--maxw); margin: 0 auto; padding: 36px 16px 44px; }
+.disclaimer p { margin: 0 0 12px; color: #d8d8d8; font-size: .92rem; }
+.disclaimer .stand { color: var(--text); font-size: 1.17rem; }
+
+/* ---------- Kleine Bildschirme ---------- */
+@media (max-width: 760px) {
+  .rule-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .rule-grid { grid-template-columns: 1fr; }
+  .rules > li { grid-template-columns: 2.9em 1fr; }
+  .team { grid-template-columns: 1fr; }
+  .site-header .inner { justify-content: center; }
+}
