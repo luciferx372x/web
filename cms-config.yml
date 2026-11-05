@@ -1,0 +1,76 @@
+# Konfiguration der Verwaltung (admin.html).
+# Diese Datei ist öffentlich lesbar: Hier dürfen nie Passwörter oder Zugangsschlüssel stehen.
+
+backend:
+  name: github
+  repo: luciferx372x/web
+  branch: main
+
+# Bilder liegen im Hauptordner des Repositories (in der Verwaltung noch nicht benutzt).
+media_folder: /
+public_folder: /
+
+collections:
+  - name: einstellungen
+    label: Einstellungen
+    files:
+      - name: allgemein
+        label: Rote Leiste, Links und Fußzeile
+        file: einstellungen.json
+        fields:
+          - label: Text in der roten Leiste
+            name: status_text
+            widget: string
+            required: false
+            hint: "Zum Beispiel: Server im Aufbau. Wenn du das Feld leer lässt, verschwindet die rote Leiste."
+          - label: Text auf dem Knopf in der roten Leiste
+            name: status_button_text
+            widget: string
+            required: false
+            hint: "Zum Beispiel: in arbeit oder Discord beitreten."
+          - label: Link des Knopfs
+            name: status_link
+            widget: string
+            required: false
+            pattern: ['^https://.+', 'Der Link muss mit https:// beginnen.']
+            hint: "Muss mit https:// beginnen. Ohne Text und Link verschwindet der Knopf."
+          - label: Discord-Link
+            name: discord_url
+            widget: string
+            required: false
+            pattern: ['^https://.+', 'Der Link muss mit https:// beginnen.']
+            hint: "Link hinter dem Discord-Symbol. Leer lassen, dann verschwindet das Symbol."
+          - label: TikTok-Link
+            name: tiktok_url
+            widget: string
+            required: false
+            pattern: ['^https://.+', 'Der Link muss mit https:// beginnen.']
+            hint: "Link hinter dem TikTok-Symbol. Leer lassen, dann verschwindet das Symbol."
+          - label: YouTube-Link
+            name: youtube_url
+            widget: string
+            required: false
+            pattern: ['^https://.+', 'Der Link muss mit https:// beginnen.']
+            hint: "Link hinter dem YouTube-Symbol. Leer lassen, dann verschwindet das Symbol."
+          - label: Stand-Angabe in der Fußzeile
+            name: stand
+            widget: string
+            required: false
+            hint: "Zum Beispiel: Stand: 08.2026"
+
+  - name: team
+    label: Team
+    files:
+      - name: team
+        label: Teammitglieder
+        file: team.json
+        fields:
+          - label: Teammitglieder
+            name: mitglieder
+            label_singular: Mitglied
+            widget: list
+            summary: "{{fields.rolle}}: {{fields.name}}"
+            hint: "Die Reihenfolge lässt sich per Ziehen ändern. Mit dem Plus kommt eine Person dazu."
+            fields:
+              - { label: Rolle, name: rolle, widget: string, hint: "Zum Beispiel: Moderator" }
+              - { label: Name, name: name, widget: string }
