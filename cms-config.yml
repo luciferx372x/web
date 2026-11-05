@@ -74,3 +74,80 @@ collections:
             fields:
               - { label: Rolle, name: rolle, widget: string, hint: "Zum Beispiel: Moderator" }
               - { label: Name, name: name, widget: string }
+
+  - name: regelwerke
+    label: Regelwerke
+    description: "Hier bearbeitest du die Texte der Regelwerke. Du schreibst wie in einem Textprogramm, die Seite übernimmt die Gestaltung."
+    files:
+      - name: regelwerk_allgemein
+        label: Regelwerk (allgemein)
+        file: regeln-allgemein.json
+        fields:
+          - { label: Dokumenttitel, name: dokumenttitel, widget: string, required: false, hint: "Kleine Zeile über dem Text." }
+          - { label: Stand, name: stand, widget: string, required: false, hint: "Kleine Zeile unter dem Titel, zum Beispiel: Stand: 11.08.2026. Leer lassen, wenn nichts angezeigt werden soll." }
+          - label: Text
+            name: inhalt
+            widget: markdown
+            buttons: [bold, italic, link, heading-two, heading-three, heading-four, bulleted-list, numbered-list, quote]
+            editor_components: [hr]
+            hint: "Schreibe die Regelnummer an den Anfang der Zeile, zum Beispiel 1.1. mit Punkt und Leerzeichen danach, dann erscheint sie links in Rot. Abschnitte mit Überschrift 2, Unterabschnitte mit Überschrift 3 oder 4. Eine Aufzählung direkt unter einer Regel gehört zu dieser Regel. Zitat ergibt einen farbigen Hinweiskasten. Eine Trennlinie macht alles danach zur Schlussbemerkung. Enter beginnt einen neuen Absatz, Umschalt+Enter einen Zeilenumbruch."
+      - name: regelwerk_ht
+        label: Regelwerk HT
+        file: regeln-ht.json
+        fields:
+          - { label: Dokumenttitel, name: dokumenttitel, widget: string, required: false, hint: "Kleine Zeile über dem Text." }
+          - { label: Stand, name: stand, widget: string, required: false, hint: "Kleine Zeile unter dem Titel, zum Beispiel: Stand: 11.08.2026. Leer lassen, wenn nichts angezeigt werden soll." }
+          - label: Text
+            name: inhalt
+            widget: markdown
+            buttons: [bold, italic, link, heading-two, heading-three, heading-four, bulleted-list, numbered-list, quote]
+            editor_components: [hr]
+            hint: "Schreibe die Regelnummer an den Anfang der Zeile, zum Beispiel 1.1. mit Punkt und Leerzeichen danach, dann erscheint sie links in Rot. Abschnitte mit Überschrift 2, Unterabschnitte mit Überschrift 3 oder 4. Eine Aufzählung direkt unter einer Regel gehört zu dieser Regel. Zitat ergibt einen farbigen Hinweiskasten. Eine Trennlinie macht alles danach zur Schlussbemerkung. Enter beginnt einen neuen Absatz, Umschalt+Enter einen Zeilenumbruch."
+      - name: regelwerk_at
+        label: Regelwerk AT
+        file: regeln-at.json
+        fields:
+          - { label: Dokumenttitel, name: dokumenttitel, widget: string, required: false, hint: "Kleine Zeile über dem Text." }
+          - { label: Stand, name: stand, widget: string, required: false, hint: "Kleine Zeile unter dem Titel, zum Beispiel: Stand: 11.08.2026. Leer lassen, wenn nichts angezeigt werden soll." }
+          - label: Text
+            name: inhalt
+            widget: markdown
+            buttons: [bold, italic, link, heading-two, heading-three, heading-four, bulleted-list, numbered-list, quote]
+            editor_components: [hr]
+            hint: "Schreibe die Regelnummer an den Anfang der Zeile, zum Beispiel 1.1. mit Punkt und Leerzeichen danach, dann erscheint sie links in Rot. Abschnitte mit Überschrift 2, Unterabschnitte mit Überschrift 3 oder 4. Eine Aufzählung direkt unter einer Regel gehört zu dieser Regel. Zitat ergibt einen farbigen Hinweiskasten. Eine Trennlinie macht alles danach zur Schlussbemerkung. Enter beginnt einen neuen Absatz, Umschalt+Enter einen Zeilenumbruch."
+      - name: regelwerk_polizei
+        label: Polizei-Regelwerk
+        file: regeln-polizei.json
+        fields:
+          - { label: Dokumenttitel, name: dokumenttitel, widget: string, required: false, hint: "Kleine Zeile über dem Text." }
+          - { label: Stand, name: stand, widget: string, required: false, hint: "Kleine Zeile unter dem Titel, zum Beispiel: Stand: 11.08.2026. Leer lassen, wenn nichts angezeigt werden soll." }
+          - label: Text
+            name: inhalt
+            widget: markdown
+            buttons: [bold, italic, link, heading-two, heading-three, heading-four, bulleted-list, numbered-list, quote]
+            editor_components: [hr]
+            hint: "Schreibe die Regelnummer an den Anfang der Zeile, zum Beispiel 1.1. mit Punkt und Leerzeichen danach, dann erscheint sie links in Rot. Abschnitte mit Überschrift 2, Unterabschnitte mit Überschrift 3 oder 4. Eine Aufzählung direkt unter einer Regel gehört zu dieser Regel. Zitat ergibt einen farbigen Hinweiskasten. Eine Trennlinie macht alles danach zur Schlussbemerkung. Enter beginnt einen neuen Absatz, Umschalt+Enter einen Zeilenumbruch."
+      - name: regelwerk_medic
+        label: Medic-Regelwerk
+        file: regeln-medic.json
+        fields:
+          - { label: Dokumenttitel, name: dokumenttitel, widget: string, required: false, hint: "Kleine Zeile über dem Text." }
+          - { label: Stand, name: stand, widget: string, required: false, hint: "Kleine Zeile unter dem Titel, zum Beispiel: Stand: 11.08.2026. Leer lassen, wenn nichts angezeigt werden soll." }
+          - label: Text
+            name: inhalt
+            widget: markdown
+            buttons: [bold, italic, link, heading-two, heading-three, heading-four, bulleted-list, numbered-list, quote]
+            editor_components: [hr]
+            hint: "Schreibe die Regelnummer an den Anfang der Zeile, zum Beispiel 1.1. mit Punkt und Leerzeichen danach, dann erscheint sie links in Rot. Abschnitte mit Überschrift 2, Unterabschnitte mit Überschrift 3 oder 4. Eine Aufzählung direkt unter einer Regel gehört zu dieser Regel. Zitat ergibt einen farbigen Hinweiskasten. Eine Trennlinie macht alles danach zur Schlussbemerkung. Enter beginnt einen neuen Absatz, Umschalt+Enter einen Zeilenumbruch."
+      - name: regelwerk_illegale
+        label: Regelwerk für Illegale Fraktionen
+        file: regeln-illegale.json
+        fields:
+          - { label: Dokumenttitel, name: dokumenttitel, widget: string, required: false, hint: "Kleine Zeile über dem Text." }
+          - { label: Stand, name: stand, widget: string, required: false, hint: "Kleine Zeile unter dem Titel, zum Beispiel: Stand: 11.08.2026. Leer lassen, wenn nichts angezeigt werden soll." }
+          - label: Text
+            name: inhalt
+            widget: markdown
+            buttons: [bold, italic, link, heading-two, heading-three, heading-four, bulleted-list, numbered-list, quote]
+            editor_components: [hr]
+            hint: "Schreibe die Regelnummer an den Anfang der Zeile, zum Beispiel 1.1. mit Punkt und Leerzeichen danach, dann erscheint sie links in Rot. Abschnitte mit Überschrift 2, Unterabschnitte mit Überschrift 3 oder 4. Eine Aufzählung direkt unter einer Regel gehört zu dieser Regel. Zitat ergibt einen farbigen Hinweiskasten. Eine Trennlinie macht alles danach zur Schlussbemerkung. Enter beginnt einen neuen Absatz, Umschalt+Enter einen Zeilenumbruch."

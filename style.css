@@ -277,6 +277,17 @@ a:hover { color: var(--red-bright); }
   color: var(--muted); font-size: .86rem;
 }
 
+/* Regelwerke aus den Datendateien (regeln.js) */
+.prose > :first-child { margin-top: 0; }
+.regel { display: grid; grid-template-columns: 2.7em 1fr; gap: 0 .35em; margin: 0 0 9px; }
+.regel-text > :first-child { margin-top: 0; }
+.regel-text .examples, .regel-text .sublist { margin-top: 5px; }
+.prose .note > :first-child { margin-top: 0; }
+.prose .note > :last-child { margin-bottom: 0; }
+.prose .closing > :last-child { margin-bottom: 0; }
+.prose ol.plain { margin: 0 0 10px; padding-left: 1.3em; }
+.prose .plain ul, .prose .plain ol { margin: 4px 0; padding-left: 1.2em; }
+
 /* Team */
 .team {
   display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
@@ -317,7 +328,7 @@ a:hover { color: var(--red-bright); }
 }
 @media (max-width: 480px) {
   .rule-grid { grid-template-columns: 1fr; }
-  .rules > li { grid-template-columns: 2.6em 1fr; }
+  .rules > li, .regel { grid-template-columns: 2.6em 1fr; }
   .team { grid-template-columns: 1fr; }
   .site-header .inner { justify-content: center; }
 }

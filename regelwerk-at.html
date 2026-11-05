@@ -10,6 +10,7 @@
   <link rel="apple-touch-icon" href="bild-apple-touch-icon.png">
   <link rel="stylesheet" href="style.css">
   <script src="site.js" defer></script>
+  <script src="regeln.js" defer></script>
 </head>
 <body>
   <a class="skip" href="#main">Zum Hauptinhalt springen</a>
@@ -48,64 +49,9 @@
         <li><a href="regelwerk-illegale-fraktionen.html">Illegale Fraktionen</a></li>
       </ul>
 
-      <article class="panel prose">
-        <p class="doc-title">Frankfurt RP – Regelwerk AT</p>
-        <p class="doc-meta">Stand: 11.08.2026</p>
-
-        <section>
-          <h2>§1 Begriffsklärung</h2>
-
-          <h3>Abs. 1 Roleplay</h3>
-          <p>„Roleplay“ (auf deutsch Rollenspiel) bedeutet einen fiktiven Charakter oder eine Figur zu spielen. Dieser soll nach bestem Bestreben realistisch sein und seine Denkweisen und Intentionen verkörpern. Der Name, das Alter, das Geschlecht und wichtige Charaktermerkmale bestimmt der Spieler selbst.</p>
-
-          <h3>Abs. 2 IC</h3>
-          <p>„IC“ bedeutet „In Charakter“ und beschreibt die Gesamtheit allen Roleplays aus Sicht des Charakters.</p>
-
-          <h3>Abs. 3 OOC</h3>
-          <p>„OOC“ bedeutet „Out of Character“ und beschreibt die Gesamtheit aller Handlungen, die sich außerhalb der im Roleplay dargestellten Szenen und Handlungsstränge ereignen.</p>
-
-          <h3>Abs. 4 Metagaming</h3>
-          <p>Der Begriff „Meta-Gaming“ beschreibt die unerlaubte Beschaffung und Verwendung von Informationen, die nicht im RP herausgefunden wurden.</p>
-
-          <h3>Abs. 5 Power-RP</h3>
-          <p>Das „Power-RP“ beschreibt den Entzug der Möglichkeit zum Herauskommen aus RP-Situationen.</p>
-
-          <h3>Abs. 6 Fail-RP</h3>
-          <p>Der Begriff „Fail-RP“ beschreibt die Gesamtheit der fehlerbehafteten oder schlecht ausgespielten RP-Situationen, welche keinen realistischen Bezug haben.</p>
-
-          <h3>Abs. 7 Random Deathmatch</h3>
-          <p>Der Begriff „Random Deathmatch“ oder kurz „RDM“ beschreibt das absichtliche randomisierte Töten von anderen Spielern oder NPCs ohne sichtbaren oder begründeten RP-Hintergrund.</p>
-
-          <h3>Abs. 8 Vehicle Deathmatch</h3>
-          <p>Der Begriff „Vehicle Deathmatch“ oder kurz „VDM“ beschreibt das absichtliche randomisierte Töten von anderen Spielern oder NPCs mittels Kraftfahrzeug oder anderem Gefährt ohne sichtbaren oder begründeten RP-Hintergrund.</p>
-          <p class="note"><strong>Ausnahmebestimmungen:</strong> Das Durchfahren von Blockaden auch unter Schädigung von Personen oder NPCs auf einer Flucht vor der Polizei.</p>
-
-          <h3>Abs. 9 Extreme-RP</h3>
-          <p>„Extreme-RP“ beschreibt die Verherrlichung von Inhalten wie „Vergewaltigung“, „Terrorismus“, „Stalking“, „Zerstückelung oder Abschneiden von Körperteilen“, „rassistischen oder frauenfeindlichen Taten und Handlungen“ oder an diese Inhalte angelehnte Themen.</p>
-          <p class="note"><strong>Zusatzbestimmung:</strong> Sollte ein Verhalten diesen Tatbestand erfüllen, ist mit sofortigem, indiskutablem Perma-Bann zu rechnen.</p>
-
-          <h3>Abs. 10 RP-Flucht</h3>
-          <p>Der Begriff „RP-Flucht“ beschreibt die gewollte Entziehung aus einer RP-Situation, welche zufällig oder auch von anderen geplant eintritt. Das Ausloggen oder Vortäuschen eines technischen Fehlers oder Defekts erfüllt diesen Tatbestand ebenso.</p>
-
-          <h3>Abs. 11 Backseat-Gaming</h3>
-          <p>Der Begriff „Backseat-Gaming“ beschreibt die Zuhilfenahme von externen Personen, um eine Situation anders auszuspielen oder zum Erfolg zu bringen. Insbesondere für Streamer gilt es, Kommentare von Zuschauern zu ignorieren und nicht in das aktive RP einzubinden.</p>
-
-          <h3>Abs. 12 Scripted RP</h3>
-          <p>Der Begriff „Scripted RP“ beschreibt das Besprechen und Abstimmen von Personengruppen im OOC-Bereich, um dort Taten und Handlungsstränge für das RP zu planen und diese dann umzusetzen.</p>
-
-          <h3>Abs. 13 Bug-Using</h3>
-          <p>Der Begriff „Bug-Using“ beschreibt die Ausnutzung von Spiel- und/oder Skriptfehlern zur persönlichen Bereicherung des Spielers oder Dritter.</p>
-          <p class="note"><strong>Zusatzbestimmung:</strong> Sollte ein solcher Fehler entdeckt werden, ist dieser unverzüglich bei der zuständigen Instanz zu melden und alle daraus hervorgegangenen Vorteile müssen zurückgesetzt werden.</p>
-
-          <h3>Abs. 14 Fear-RP</h3>
-          <p>Der Begriff „Fear-RP“ beschreibt die Gesamtheit aller RP-Situationen, bei denen ein Spieler mit einer Waffe bedroht wird oder anderweitig in Lebensgefahr schwebt. In dieser Situation ist es die Pflicht des Spielers, sein Leben zu schützen, und er ist des Weiteren nicht berechtigt, die eigene Waffe zu ziehen, wenn eine andere auf ihn gerichtet ist.</p>
-
-          <h3>Abs. 15 Schwangerschaft</h3>
-          <p>Das Ausspielen einer Schwangerschaft ist nicht gestattet.</p>
-
-          <h3>Abs. 16 Power-Gaming</h3>
-          <p>Der Begriff „Power-Gaming“ beschreibt Spieler, die den Versuch betreiben, ihren Charakter so stark und so mächtig wie möglich zu machen. Es sollte darauf geachtet werden, dass jeder Schwächen hat und diese auch einen Teil des RP darstellen. Zu diesem Inhalt gehören auch übernatürliche Kräfte, diese gelten als untersagt.</p>
-        </section>
+      <article class="panel prose" data-quelle="regeln-at.json" aria-busy="true">
+        <p class="doc-meta" style="margin-top:0">Regelwerk wird geladen …</p>
+        <noscript><p>Zum Anzeigen dieses Regelwerks wird JavaScript benötigt.</p></noscript>
       </article>
     </div>
   </main>
