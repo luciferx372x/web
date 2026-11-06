@@ -10,12 +10,19 @@
   --red-bright: #ff6a55;
   --red-deep: #c4160a;
   --bar: #ff0000;
+  /* Farben und Bilder, die unter Design in der Verwaltung geändert werden können (design.json, site.js setzt sie). */
+  --red-rgb: 250, 48, 25;
+  --red-knopf: #ff4a36;
+  --bild-hintergrund-klein: url("bild-frankfurt-rp-banner-1024.jpg");
+  --bild-hintergrund-gross: url("bild-frankfurt-rp-banner-2048.jpg");
+  --bild-kopf-klein: url("bild-hero-strip-1024.jpg");
+  --bild-kopf-gross: url("bild-hero-strip-2048.jpg");
   --text: #f4f4f6;
   --muted: #b4b4bd;
   --bg: #08080b;
   --panel: rgba(16, 16, 21, 0.78);
   --line: rgba(255, 255, 255, 0.09);
-  --line-red: rgba(250, 48, 25, 0.42);
+  --line-red: rgba(var(--red-rgb), 0.42);
   --radius: 14px;
   --radius-sm: 8px;
   --maxw: 980px;
@@ -39,9 +46,9 @@ body {
   color: var(--text);
   -webkit-font-smoothing: antialiased;
   background:
-    radial-gradient(1100px 420px at 50% -140px, rgba(250, 48, 25, 0.2), transparent 70%),
+    radial-gradient(1100px 420px at 50% -140px, rgba(var(--red-rgb), 0.2), transparent 70%),
     linear-gradient(rgba(6, 6, 9, 0.9), rgba(6, 6, 9, 0.96)),
-    url("bild-frankfurt-rp-banner-1024.jpg") center top / cover no-repeat,
+    var(--bild-hintergrund-klein) center top / cover no-repeat,
     var(--bg);
   background-attachment: fixed;
 }
@@ -49,9 +56,9 @@ body {
 @media (min-width: 1100px) {
   body {
     background:
-      radial-gradient(1100px 420px at 50% -140px, rgba(250, 48, 25, 0.2), transparent 70%),
+      radial-gradient(1100px 420px at 50% -140px, rgba(var(--red-rgb), 0.2), transparent 70%),
       linear-gradient(rgba(6, 6, 9, 0.9), rgba(6, 6, 9, 0.96)),
-      url("bild-frankfurt-rp-banner-2048.jpg") center top / cover no-repeat,
+      var(--bild-hintergrund-gross) center top / cover no-repeat,
       var(--bg);
     background-attachment: fixed;
   }
@@ -119,7 +126,7 @@ a:hover { color: var(--red-bright); }
 }
 .site-header::after {
   content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(250, 48, 25, 0.85), transparent);
+  background: linear-gradient(90deg, transparent, rgba(var(--red-rgb), 0.85), transparent);
 }
 .site-header .inner {
   display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
@@ -140,7 +147,7 @@ a:hover { color: var(--red-bright); }
 }
 .nav a:hover { background: rgba(255, 255, 255, 0.07); color: var(--text); }
 .nav a[aria-current="page"] {
-  background: rgba(250, 48, 25, 0.16); color: #fff;
+  background: rgba(var(--red-rgb), 0.16); color: #fff;
   box-shadow: inset 0 0 0 1px var(--line-red);
 }
 
@@ -150,14 +157,14 @@ a:hover { color: var(--red-bright); }
   aspect-ratio: 3 / 1; max-height: 320px;
   object-fit: cover; object-position: 50% 52%;
   border: 1px solid var(--line); border-radius: var(--radius);
-  box-shadow: var(--shadow), 0 0 0 1px rgba(250, 48, 25, 0.1);
+  box-shadow: var(--shadow), 0 0 0 1px rgba(var(--red-rgb), 0.1);
 }
 
 .hero {
   position: relative; isolation: isolate;
   display: grid; place-items: center; text-align: center;
   min-height: clamp(84px, 11vw, 124px);
-  background: #000 url("bild-hero-strip-1024.jpg") center / cover no-repeat;
+  background: #000 var(--bild-kopf-klein) center / cover no-repeat;
   border-bottom: 1px solid var(--line);
 }
 .hero::before {
@@ -165,7 +172,7 @@ a:hover { color: var(--red-bright); }
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.22), rgba(0, 0, 0, 0.58));
 }
 @media (min-width: 900px) {
-  .hero { background-image: url("bild-hero-strip-2048.jpg"); }
+  .hero { background-image: var(--bild-kopf-gross); }
 }
 .hero h1 {
   margin: 0; padding: 0 16px;
@@ -203,9 +210,9 @@ a:hover { color: var(--red-bright); }
 }
 .btn:hover, .btn:focus-visible {
   border-color: transparent;
-  background: linear-gradient(135deg, #ff4a36, var(--red-deep));
+  background: linear-gradient(135deg, var(--red-knopf), var(--red-deep));
   color: #fff; transform: translateY(-1px);
-  box-shadow: 0 8px 20px rgba(250, 48, 25, 0.32);
+  box-shadow: 0 8px 20px rgba(var(--red-rgb), 0.32);
 }
 
 .social {
@@ -274,7 +281,7 @@ a:hover { color: var(--red-bright); }
 .prose .note {
   margin: 0 0 12px; padding: 9px 14px;
   border-left: 3px solid var(--red); border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  background: rgba(250, 48, 25, 0.09);
+  background: rgba(var(--red-rgb), 0.09);
 }
 .prose .closing {
   margin: 24px 0 0; padding-top: 12px;
@@ -333,10 +340,10 @@ a:hover { color: var(--red-bright); }
 .formular .knopf {
   padding: 10px 22px;
   border: 1px solid var(--line-red); border-radius: 10px;
-  background: linear-gradient(135deg, #ff4a36, var(--red-deep));
+  background: linear-gradient(135deg, var(--red-knopf), var(--red-deep));
   color: #fff; font: inherit; font-weight: 600; cursor: pointer;
 }
-.formular .knopf:hover:not(:disabled), .formular .knopf:focus-visible { box-shadow: 0 8px 20px rgba(250, 48, 25, 0.32); transform: translateY(-1px); }
+.formular .knopf:hover:not(:disabled), .formular .knopf:focus-visible { box-shadow: 0 8px 20px rgba(var(--red-rgb), 0.32); transform: translateY(-1px); }
 .formular .knopf:disabled { opacity: .55; cursor: default; }
 .formular .status { min-height: 1.5em; margin: 12px 0 0; color: var(--muted); font-size: .9rem; }
 .formular .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
@@ -367,7 +374,7 @@ a:hover { color: var(--red-bright); }
 .werkzeuge .inhaltsliste { margin: 0; padding: 2px 14px 12px; list-style: none; font-size: .88rem; }
 .werkzeuge .inhaltsliste li { margin: 3px 0; }
 .werkzeuge .inhaltsliste .e3 { padding-left: 1.1em; }
-.prose mark.treffer { padding: 0; border-radius: 2px; background: rgba(250, 48, 25, 0.42); color: #fff; }
+.prose mark.treffer { padding: 0; border-radius: 2px; background: rgba(var(--red-rgb), 0.42); color: #fff; }
 
 /* Aufklappbare Fragen auf eigenen Seiten (Einstellung "Fragen aufklappbar" in der Verwaltung) */
 .faq-eintrag { margin: 0 0 10px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: rgba(255, 255, 255, 0.03); }
@@ -389,7 +396,7 @@ a:hover { color: var(--red-bright); }
 
 .disclaimer {
   position: relative; isolation: isolate;
-  background: #000 url("bild-frankfurt-rp-banner-1024.jpg") center / cover no-repeat;
+  background: #000 var(--bild-hintergrund-klein) center / cover no-repeat;
 }
 .disclaimer::before { content: ""; position: absolute; inset: 0; z-index: -1; background: rgba(0, 0, 0, 0.84); }
 .disclaimer .inner { max-width: var(--maxw); margin: 0 auto; padding: 22px 16px 28px; }

@@ -6,6 +6,7 @@
    - seitentitel.json     Überschrift, Browsertitel und Beschreibung jeder Seite
    - startseite.json      Texte der Startseite
    - seiten.json          Eigene Seiten (seite.html?s=...), die im Hauptmenü erscheinen sollen
+   - design.json          Farben und Bilder (Verwaltung unter Website, Design)
    Stand-Angaben: Steht {monat} im Text, setzt die Seite den Monat der letzten Änderung ein
    (aus "Stand: {monat}" wird zum Beispiel "Stand: 11.2026"). Den Monat liefert der Server
    mit dem Änderungsdatum der Datei (Last-Modified), niemand muss ihn von Hand pflegen.
@@ -343,6 +344,105 @@
     }
   }
 
+  /* ---------- design.json: Farben und Bilder ---------- */
+
+  /* Diese Werte entsprechen dem festen Aussehen in style.css. Stehen sie unverändert in design.json, bleibt alles wie es ist. */
+  var STANDARD_HAUPTFARBE = '#fa3019';
+  var STANDARD_LEISTENFARBE = '#ff0000';
+  var FARBE = /^#[0-9a-fA-F]{6}$/;
+  /* Bilder dürfen nur aus dem Ordner "bilder" kommen, den die Verwaltung beim Hochladen anlegt. Alles andere wird ignoriert. */
+  var BILDPFAD = /^\/?(bilder\/[A-Za-z0-9][A-Za-z0-9._\-]{0,100}\.(?:png|jpe?g|webp|gif|svg|avif))$/i;
+
+  function bildPfad(wert) {
+    var treffer = BILDPFAD.exec(sauber(wert));
+    return treffer ? treffer[1] : '';
+  }
+
+  /* Erlaubt #rgb und #rrggbb in Groß- oder Kleinschreibung und gibt immer #rrggbb in Kleinbuchstaben zurück, sonst einen leeren Text. */
+  function farbeNormal(wert) {
+    var text = sauber(wert).toLowerCase();
+    if (/^#[0-9a-f]{3}$/.test(text)) {
+      text = '#' + text.charAt(1) + text.charAt(1) + text.charAt(2) + text.charAt(2) + text.charAt(3) + text.charAt(3);
+    }
+    return FARBE.test(text) ? text : '';
+  }
+
+  function farbeInZahlen(hex) {
+    return [parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16)];
+  }
+
+  function zahlenInFarbe(zahlen) {
+    return '#' + zahlen.map(function (teil) {
+      var wert = Math.max(0, Math.min(255, Math.round(teil))).toString(16);
+      return wert.length < 2 ? '0' + wert : wert;
+    }).join('');
+  }
+
+  /* Mischt eine Farbe zum Anteil (0 bis 1) mit einer Zielfarbe, zum Beispiel mit Weiß für eine hellere Variante. */
+  function mischen(zahlen, ziel, anteil) {
+    return zahlen.map(function (teil, i) { return teil + (ziel[i] - teil) * anteil; });
+  }
+
+  function bildTauschen(bilder, wert) {
+    var pfad = bildPfad(wert);
+    if (!pfad) { return; }
+    Array.prototype.forEach.call(bilder, function (bild) {
+      bild.removeAttribute('srcset');
+      bild.removeAttribute('sizes');
+      bild.setAttribute('src', pfad);
+    });
+  }
+
+  function designAnwenden(daten) {
+    if (!daten || typeof daten !== 'object' || Array.isArray(daten)) { return; }
+    var stil = document.documentElement.style;
+
+    var haupt = farbeNormal(daten.farbe_haupt);
+    if (haupt && haupt !== STANDARD_HAUPTFARBE) {
+      var zahlen = farbeInZahlen(haupt);
+      stil.setProperty('--red', haupt);
+      stil.setProperty('--red-rgb', zahlen.join(', '));
+      stil.setProperty('--red-bright', zahlenInFarbe(mischen(zahlen, [255, 255, 255], 0.3)));
+      stil.setProperty('--red-deep', zahlenInFarbe(mischen(zahlen, [0, 0, 0], 0.22)));
+      stil.setProperty('--red-knopf', zahlenInFarbe(mischen(zahlen, [255, 255, 255], 0.12)));
+    }
+
+    var leiste = farbeNormal(daten.farbe_leiste);
+    if (leiste && leiste !== STANDARD_LEISTENFARBE) {
+      stil.setProperty('--bar', leiste);
+      var meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) { meta.setAttribute('content', leiste); }
+    }
+
+    var hintergrund = bildPfad(daten.bild_hintergrund);
+    if (hintergrund) {
+      stil.setProperty('--bild-hintergrund-klein', 'url("' + hintergrund + '")');
+      stil.setProperty('--bild-hintergrund-gross', 'url("' + hintergrund + '")');
+    }
+    var kopf = bildPfad(daten.bild_kopf);
+    if (kopf) {
+      stil.setProperty('--bild-kopf-klein', 'url("' + kopf + '")');
+      stil.setProperty('--bild-kopf-gross', 'url("' + kopf + '")');
+    }
+
+    bildTauschen(document.querySelectorAll('.site-header .brand img'), daten.bild_logo);
+
+    var symbol = bildPfad(daten.bild_favicon);
+    if (symbol) {
+      Array.prototype.forEach.call(document.querySelectorAll('link[rel~="icon"], link[rel="apple-touch-icon"]'), function (eintrag) {
+        eintrag.removeAttribute('sizes');
+        eintrag.removeAttribute('type');
+        eintrag.setAttribute('href', symbol);
+      });
+    }
+
+    bildTauschen(document.querySelectorAll('img.hero-img'), daten.bild_startseite_banner);
+    var karten = document.querySelectorAll('.home .showcase');
+    if (karten[0]) { bildTauschen(karten[0].querySelectorAll('img'), daten.bild_startseite_regeln); }
+    if (karten[1]) { bildTauschen(karten[1].querySelectorAll('img'), daten.bild_startseite_social); }
+    bildTauschen(document.querySelectorAll('.showcase[aria-labelledby="h-team"] img'), daten.bild_team);
+  }
+
   function ohneFehler(versprechen) {
     return versprechen.catch(function () { return null; });
   }
@@ -351,6 +451,16 @@
   function sicher(arbeit) {
     try { arbeit(); } catch (fehler) { /* fester Inhalt bleibt */ }
   }
+
+  /* Farben und Bilder (design.json) werden sofort angewendet, ohne auf die anderen Dateien zu warten, damit der Wechsel
+     vom Standard-Aussehen kaum zu sehen ist. Die Datei zählt nicht für die Stand-Angabe, denn sie ändert keinen Text.
+     Fehlt sie oder ist sie kaputt, bleibt das feste Aussehen aus style.css. */
+  fetch('design.json', { cache: 'no-cache' }).then(function (antwort) {
+    if (!antwort.ok) { throw new Error('design.json: ' + antwort.status); }
+    return antwort.json();
+  }).then(function (daten) {
+    sicher(function () { designAnwenden(daten); });
+  }).catch(function () { /* Standard-Aussehen bleibt */ });
 
   var einstellungen = ohneFehler(laden('einstellungen.json'));
   einstellungen.then(function (daten) { sicher(function () { einstellungenAnwenden(daten); }); });

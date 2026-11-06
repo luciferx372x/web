@@ -6,9 +6,15 @@ backend:
   repo: luciferx372x/web
   branch: main
 
-# Bilder liegen im Hauptordner des Repositories (in der Verwaltung noch nicht benutzt).
-media_folder: /
-public_folder: /
+# Bilder, die in der Verwaltung hochgeladen werden (Website, Design), landen im Ordner bilder im Repository.
+# Die Standardbilder der Website liegen im Hauptordner und werden hier nicht benutzt.
+media_folder: /bilder
+public_folder: /bilder
+media_library:
+  name: default
+  config:
+    max_file_size: 1572864
+    slugify_filename: true
 
 collections:
   - name: einstellungen
@@ -181,7 +187,7 @@ collections:
 
   - name: website
     label: Website
-    description: "Menü, Fußzeile, Überschriften und Texte der Startseite."
+    description: "Menü, Fußzeile, Überschriften, Texte der Startseite sowie Farben und Bilder."
     files:
       - name: seiteninhalte
         label: Menü, Fußzeile und Disclaimer
@@ -243,6 +249,70 @@ collections:
           - { label: Beschreibung des Regelwerk-Banners, name: regeln_bild_alt, widget: string, required: false }
           - { label: Überschrift der Social-Media-Karte, name: social_ueberschrift, widget: string, hint: "Unsichtbar, nur für Screenreader." }
           - { label: Beschreibung des Social-Media-Banners, name: social_bild_alt, widget: string, required: false }
+      - name: design
+        label: Design (Farben und Bilder)
+        file: design.json
+        fields:
+          - label: Hauptfarbe
+            name: farbe_haupt
+            widget: color
+            default: "#fa3019"
+            allowInput: true
+            hint: "Das Rot der Links, Knöpfe, Balken und Hervorhebungen. Hellere und dunklere Töne werden daraus berechnet. Standard: #fa3019. Die Bilder (zum Beispiel das Logo) ändern sich dadurch nicht."
+          - label: Farbe der oberen Leiste
+            name: farbe_leiste
+            widget: color
+            default: "#ff0000"
+            allowInput: true
+            hint: "Die schmale Leiste ganz oben. Steht der Server-Status auf Online oder Wartung, ist sie grün oder orange. Standard: #ff0000."
+          - label: Logo
+            name: bild_logo
+            widget: image
+            required: false
+            choose_url: false
+            hint: "Oben links neben dem Namen. Quadratisch, mindestens 128 mal 128 Pixel, am besten PNG mit transparentem Hintergrund, höchstens 1,5 MB. Leer lassen für das Standard-Logo."
+          - label: Symbol im Browser-Tab (Favicon)
+            name: bild_favicon
+            widget: image
+            required: false
+            choose_url: false
+            hint: "Das kleine Symbol im Browser-Tab. Quadratisch, 64 mal 64 Pixel oder größer, am besten PNG. Leer lassen für das Standard-Symbol."
+          - label: Hintergrundbild der Website
+            name: bild_hintergrund
+            widget: image
+            required: false
+            choose_url: false
+            hint: "Hintergrund der ganzen Website und der Fußzeile, wird stark abgedunkelt. Breit, zum Beispiel 2048 mal 768 Pixel, am besten JPG, höchstens 1,5 MB. Leer lassen für das Standard-Bild."
+          - label: Kopfbild der Unterseiten
+            name: bild_kopf
+            widget: image
+            required: false
+            choose_url: false
+            hint: "Der schmale Streifen hinter der Überschrift auf den Unterseiten. Sehr breit, zum Beispiel 2048 mal 300 Pixel, am besten JPG, höchstens 1,5 MB. Leer lassen für das Standard-Bild."
+          - label: Großes Banner der Startseite
+            name: bild_startseite_banner
+            widget: image
+            required: false
+            choose_url: false
+            hint: "Das große Bild oben auf der Startseite. Format 8 zu 3, zum Beispiel 2048 mal 768 Pixel, am besten JPG, höchstens 1,5 MB. Leer lassen für das Standard-Banner."
+          - label: Bild bei den Regelwerken (Startseite)
+            name: bild_startseite_regeln
+            widget: image
+            required: false
+            choose_url: false
+            hint: "Das Bild über den Regelwerk-Knöpfen auf der Startseite. Format 8 zu 3, zum Beispiel 2048 mal 768 Pixel, am besten JPG, höchstens 1,5 MB. Leer lassen für das Standard-Bild."
+          - label: Bild bei den Social-Media-Symbolen (Startseite)
+            name: bild_startseite_social
+            widget: image
+            required: false
+            choose_url: false
+            hint: "Das Bild über den Symbolen für Discord und TikTok auf der Startseite. Format 8 zu 3, zum Beispiel 2048 mal 768 Pixel, am besten JPG, höchstens 1,5 MB. Leer lassen für das Standard-Bild."
+          - label: Bild der Team-Seite
+            name: bild_team
+            widget: image
+            required: false
+            choose_url: false
+            hint: "Das Bild oben auf der Team-Seite. Format 8 zu 3, zum Beispiel 2048 mal 768 Pixel, am besten JPG, höchstens 1,5 MB. Leer lassen für das Standard-Bild."
 
   - name: eigene_seiten
     label: Eigene Seiten
