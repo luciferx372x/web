@@ -1,0 +1,60 @@
+{
+  "overlays_an": true,
+  "schalter": true,
+  "eintraege": [
+    {
+      "name": "Weihnachten",
+      "effekt": "weihnachten",
+      "bezeichnung": "",
+      "von": "01.12.",
+      "bis": "26.12.",
+      "staerke": "normal",
+      "aktiv": true
+    },
+    {
+      "name": "Silvester",
+      "effekt": "feuerwerk",
+      "bezeichnung": "",
+      "von": "31.12.",
+      "bis": "01.01.",
+      "staerke": "normal",
+      "aktiv": true
+    },
+    {
+      "name": "Valentinstag",
+      "effekt": "herzen",
+      "bezeichnung": "",
+      "von": "13.02.",
+      "bis": "14.02.",
+      "staerke": "wenig",
+      "aktiv": true
+    },
+    {
+      "name": "Ostern 2027",
+      "effekt": "ostern",
+      "bezeichnung": "",
+      "von": "24.03.2027",
+      "bis": "29.03.2027",
+      "staerke": "normal",
+      "aktiv": true
+    },
+    {
+      "name": "Halloween",
+      "effekt": "halloween",
+      "bezeichnung": "",
+      "von": "25.10.",
+      "bis": "01.11.",
+      "staerke": "normal",
+      "aktiv": true
+    },
+    {
+      "name": "Herbst (Beispiel, ausgeschaltet)",
+      "effekt": "laub",
+      "bezeichnung": "",
+      "von": "01.10.",
+      "bis": "24.10.",
+      "staerke": "wenig",
+      "aktiv": false
+    }
+  ]
+}

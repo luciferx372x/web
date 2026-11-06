@@ -419,7 +419,7 @@ a:hover { color: var(--red-bright); }
 /* ---------- Drucken (Strg+P oder der Knopf "Drucken / PDF") ---------- */
 @media print {
   body { background: #fff !important; color: #000; font-size: 11pt; }
-  .skip, .topbar, .site-header, .subnav, .back, .werkzeuge, .footer-links, .disclaimer, .formular { display: none !important; }
+  .skip, .topbar, .site-header, .subnav, .back, .werkzeuge, .footer-links, .disclaimer, .formular, .overlay-leinwand, .edition-schalter { display: none !important; }
   .site-footer { margin: 0; }
   .hero { min-height: 0; background: none; border: 0; }
   .hero::before { display: none; }
@@ -434,4 +434,31 @@ a:hover { color: var(--red-bright); }
   .num { color: #000; }
   .prose .note { border-left-color: #000; background: #eee; }
   .faq-eintrag { border-color: #999; }
+}
+
+/* ---------- Overlays (overlay.js): Schnee, Konfetti, Feuerwerk und mehr ---------- */
+.overlay-leinwand { position: fixed; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; z-index: 90; }
+@media (prefers-reduced-motion: reduce) { .overlay-leinwand { display: none !important; } }
+
+/* Schalter "Edition | Original" unten rechts (site.js): So kann jeder die normale Seite wählen. */
+.edition-schalter {
+  position: fixed; right: 14px; bottom: 14px; z-index: 95;
+  display: flex; padding: 3px;
+  border: 1px solid var(--line-red); border-radius: 999px;
+  background: rgba(8, 8, 11, 0.84);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+  font-size: .8rem;
+}
+.edition-schalter button {
+  padding: 6px 13px; border: 0; border-radius: 999px;
+  background: transparent; color: var(--muted);
+  font: inherit; line-height: 1.3; white-space: nowrap; cursor: pointer;
+}
+.edition-schalter button:hover:not([aria-pressed="true"]) { color: var(--text); }
+.edition-schalter button[aria-pressed="true"] { background: var(--red); color: #fff; }
+.edition-schalter button:focus-visible { outline: 2px solid #fff; outline-offset: 1px; }
+@media (max-width: 480px) {
+  .edition-schalter { right: 8px; bottom: 8px; font-size: .74rem; }
+  .edition-schalter button { padding: 6px 10px; }
 }

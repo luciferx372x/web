@@ -6,7 +6,8 @@
    - Hat sich der Server-Status auf Online, Wartung, Offline oder Im Aufbau geändert, geht eine Nachricht an Discord.
    - Hat sich der "Zusatztext für Discord" geändert und ist nicht leer, geht ebenfalls eine Nachricht an Discord.
    - Alles andere (zum Beispiel ein geänderter Link) löst nichts aus.
-   Der Webhook-Link steht als Geheimnis bei GitHub (DISCORD_STATUS_WEBHOOK), nie in dieser Datei und nie auf der Website. */
+   Der Webhook-Link steht als Geheimnis bei GitHub (DISCORD_STATUS_WEBHOOK), nie in dieser Datei und nie auf der Website.
+   Fehlt das Geheimnis, obwohl eine Nachricht fällig wäre, wird der Lauf bei GitHub rot und sagt es in einem Hinweis. */
 
 import { execFileSync } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
@@ -94,27 +95,55 @@ function dateiAus(commit) {
   }
 }
 
+/* GitHub zeigt Zeilen, die mit "::error", "::warning" oder "::notice" beginnen, als Hinweis oben auf der Seite des Laufs an.
+   Darin steht nie der Webhook-Link und nie der Text der Nachricht. */
+export function hinweis(art, titel, text) {
+  const kodiert = (wert) => String(wert).replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A');
+  return '::' + art + ' title=' + kodiert(titel).replace(/:/g, '%3A').replace(/,/g, '%2C') + '::' + kodiert(text);
+}
+
+/* Ablauf der GitHub-Aktion. Gibt { fehlgeschlagen } zurück. Ist es true, wird der Lauf bei GitHub rot.
+   Rot wird er nur, wenn eine Nachricht fällig gewesen wäre und nicht gesendet werden konnte. */
+export async function aktion({ webhook, ping, vor, nach, lesen, holen = fetch, melden = console.log }) {
+  const titel = 'Discord-Status';
+  if (!vor || /^0+$/.test(vor)) {
+    melden(hinweis('notice', titel, 'Kein früherer Stand vorhanden. Es wird nichts gesendet.'));
+    return { fehlgeschlagen: false };
+  }
+  const neu = lesen(nach);
+  if (!neu) {
+    melden(hinweis('warning', titel, 'einstellungen.json ist nicht lesbar. Es wird nichts gesendet.'));
+    return { fehlgeschlagen: false };
+  }
+  const alt = lesen(vor);
+  const verlauf = zustand(alt).status + ' -> ' + zustand(neu).status;
+  if (!plan(alt, neu)) {
+    melden(hinweis('notice', titel, 'Keine Meldung nötig (Server-Status ' + verlauf + ', kein neuer Zusatztext). Es wird nichts gesendet.'));
+    return { fehlgeschlagen: false };
+  }
+  if (!webhook) {
+    melden(hinweis('error', titel, 'Es wäre eine Nachricht fällig gewesen (Server-Status ' + verlauf + '), aber das Geheimnis DISCORD_STATUS_WEBHOOK fehlt bei GitHub. ' +
+      'Es muss unter Settings, Secrets and variables, Actions als Repository secret angelegt werden. Ein Geheimnis bei Cloudflare genügt dafür nicht.'));
+    return { fehlgeschlagen: true };
+  }
+  try {
+    await ausfuehren({ webhook, ping, alt, neu, holen });
+    melden(hinweis('notice', titel, 'Nachricht an Discord gesendet (Server-Status ' + verlauf + ').'));
+    return { fehlgeschlagen: false };
+  } catch (fehler) {
+    melden(hinweis('error', titel, 'Fehler: ' + fehler.message));
+    return { fehlgeschlagen: true };
+  }
+}
+
 /* Start durch die GitHub-Aktion */
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  const webhook = (process.env.DISCORD_STATUS_WEBHOOK || '').trim();
-  const vor = (process.env.VOR_COMMIT || '').trim();
-  const nach = (process.env.NACH_COMMIT || 'HEAD').trim();
-  if (!webhook) {
-    console.log('Das Geheimnis DISCORD_STATUS_WEBHOOK ist nicht eingerichtet. Es wird nichts gesendet.');
-  } else if (!vor || /^0+$/.test(vor)) {
-    console.log('Kein früherer Stand vorhanden. Es wird nichts gesendet.');
-  } else {
-    const neu = dateiAus(nach);
-    if (!neu) {
-      console.log('einstellungen.json ist nicht lesbar. Es wird nichts gesendet.');
-    } else {
-      try {
-        const ergebnis = await ausfuehren({ webhook, ping: process.env.DISCORD_STATUS_PING, alt: dateiAus(vor), neu });
-        console.log(ergebnis.gesendet ? 'Nachricht an Discord gesendet.' : 'Keine Änderung beim Status, es wird nichts gesendet.');
-      } catch (fehler) {
-        console.error('Fehler: ' + fehler.message);
-        process.exit(1);
-      }
-    }
-  }
+  const ergebnis = await aktion({
+    webhook: (process.env.DISCORD_STATUS_WEBHOOK || '').trim(),
+    ping: process.env.DISCORD_STATUS_PING,
+    vor: (process.env.VOR_COMMIT || '').trim(),
+    nach: (process.env.NACH_COMMIT || 'HEAD').trim(),
+    lesen: dateiAus
+  });
+  if (ergebnis.fehlgeschlagen) { process.exitCode = 1; }
 }

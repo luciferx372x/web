@@ -187,7 +187,7 @@ collections:
 
   - name: website
     label: Website
-    description: "Menü, Fußzeile, Überschriften, Texte der Startseite sowie Farben und Bilder."
+    description: "Menü, Fußzeile, Überschriften, Texte der Startseite, Farben, Bilder und Overlays."
     files:
       - name: seiteninhalte
         label: Menü, Fußzeile und Disclaimer
@@ -313,6 +313,46 @@ collections:
             required: false
             choose_url: false
             hint: "Das Bild oben auf der Team-Seite. Format 8 zu 3, zum Beispiel 2048 mal 768 Pixel, am besten JPG, höchstens 1,5 MB. Leer lassen für das Standard-Bild."
+      - name: overlays
+        label: Overlays (Schnee, Feuerwerk und mehr)
+        file: overlays.json
+        fields:
+          - { label: Overlays erlauben, name: overlays_an, widget: boolean, default: true, hint: "Hauptschalter. Aus = es erscheint nie ein Overlay, auch nicht in einem eingetragenen Zeitraum." }
+          - { label: Schalter für Besucher anzeigen, name: schalter, widget: boolean, default: true, hint: "Zeigt unten rechts einen kleinen Schalter, zum Beispiel Winter-Edition oder Original. So kann jeder die normale Seite ohne Effekt wählen. Der Browser merkt sich diese Wahl 90 Tage lang. Aus = es gibt keinen Schalter, der Effekt läuft immer." }
+          - label: Zeiträume
+            name: eintraege
+            label_singular: Zeitraum
+            widget: list
+            summary: "{{fields.name}}"
+            hint: "Gilt heute mehr als ein Zeitraum, zählt der oberste. Zum Ausprobieren ohne Warten: Schreibe hinter die Adresse der Website zum Beispiel ?overlay=schnee (weitere Namen: weihnachten, sterne, konfetti, feuerwerk, laub, halloween, herzen, ostern). Mit ?overlaydatum=2026-12-24 siehst du, was an einem bestimmten Tag gelten würde. Bei „weniger Bewegung“ im Betriebssystem bleibt jedes Overlay aus."
+            fields:
+              - { label: Name, name: name, widget: string, hint: "Nur für dich, zum Beispiel Weihnachten." }
+              - label: Effekt
+                name: effekt
+                widget: select
+                default: schnee
+                options:
+                  - { label: Schneefall, value: schnee }
+                  - { label: Weihnachten (Schnee und funkelnde Sterne), value: weihnachten }
+                  - { label: Funkelnde Sterne, value: sterne }
+                  - { label: Konfetti, value: konfetti }
+                  - { label: Feuerwerk, value: feuerwerk }
+                  - { label: Herbstlaub, value: laub }
+                  - { label: "Halloween (Kürbisse, Geister, Fledermäuse)", value: halloween }
+                  - { label: Herzen (Valentinstag), value: herzen }
+                  - { label: Ostern (Eier und Blumen), value: ostern }
+              - { label: Name der Edition auf dem Schalter, name: bezeichnung, widget: string, required: false, hint: "Zum Beispiel Winter-Edition oder Halloween-Edition. Leer lassen = passender Name zum Effekt (Schnee: Winter-Edition, Halloween: Halloween-Edition, Ostern: Oster-Edition und so weiter). Höchstens 40 Zeichen." }
+              - { label: Von, name: von, widget: string, required: false, pattern: ['^(\d{1,2}\.\d{1,2}\.(\d{4})?)?$', 'Bitte so schreiben: 01.12. (gilt jedes Jahr) oder 01.12.2026 (nur in diesem Jahr).'], hint: "Erster Tag, zum Beispiel 01.12. (jedes Jahr) oder 01.12.2026 (nur ein Jahr). Beide Felder leer lassen = immer." }
+              - { label: Bis, name: bis, widget: string, required: false, pattern: ['^(\d{1,2}\.\d{1,2}\.(\d{4})?)?$', 'Bitte so schreiben: 26.12. (gilt jedes Jahr) oder 26.12.2026 (nur in diesem Jahr).'], hint: "Letzter Tag, der noch mitzählt, zum Beispiel 26.12. Über den Jahreswechsel geht es auch: von 31.12. bis 01.01." }
+              - label: Stärke
+                name: staerke
+                widget: select
+                default: normal
+                options:
+                  - { label: Wenig, value: wenig }
+                  - { label: Normal, value: normal }
+                  - { label: Viel, value: viel }
+              - { label: Eingeschaltet, name: aktiv, widget: boolean, default: true, hint: "Aus = dieser Zeitraum wird übersprungen." }
 
   - name: eigene_seiten
     label: Eigene Seiten

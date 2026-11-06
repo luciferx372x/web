@@ -7,6 +7,7 @@
    - startseite.json      Texte der Startseite
    - seiten.json          Eigene Seiten (seite.html?s=...), die im Hauptmenü erscheinen sollen
    - design.json          Farben und Bilder (Verwaltung unter Website, Design)
+   - overlays.json        Zeitplan für Overlays wie Schnee oder Feuerwerk (Verwaltung unter Website, Overlays), siehe overlay.js
    Stand-Angaben: Steht {monat} im Text, setzt die Seite den Monat der letzten Änderung ein
    (aus "Stand: {monat}" wird zum Beispiel "Stand: 11.2026"). Den Monat liefert der Server
    mit dem Änderungsdatum der Datei (Last-Modified), niemand muss ihn von Hand pflegen.
@@ -443,6 +444,224 @@
     bildTauschen(document.querySelectorAll('.showcase[aria-labelledby="h-team"] img'), daten.bild_team);
   }
 
+  /* ---------- overlays.json: Schnee, Feuerwerk und mehr nach Zeitplan, mit Schalter "Edition | Original" ---------- */
+
+  var OVERLAY_EFFEKTE = ['schnee', 'weihnachten', 'sterne', 'konfetti', 'feuerwerk', 'laub', 'halloween', 'herzen', 'ostern'];
+  var OVERLAY_STAERKEN = ['wenig', 'normal', 'viel'];
+  var DATUMSANGABE = /^(\d{1,2})\.(\d{1,2})\.(\d{4})?$/;
+  var TAGE_IM_MONAT = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+  /* Symbol und Vorgabe-Name der Edition auf dem Schalter. Im Admin kann pro Zeitraum ein eigener Name stehen. */
+  var EDITION_VORGABEN = {
+    schnee: ['❄️', 'Winter-Edition'],
+    weihnachten: ['🎄', 'Winter-Edition'],
+    sterne: ['✨', 'Sterne-Edition'],
+    konfetti: ['🎉', 'Party-Edition'],
+    feuerwerk: ['🎆', 'Neujahrs-Edition'],
+    laub: ['🍂', 'Herbst-Edition'],
+    halloween: ['🎃', 'Halloween-Edition'],
+    herzen: ['❤️', 'Valentins-Edition'],
+    ostern: ['🐣', 'Oster-Edition']
+  };
+  var EDITION_SPEICHER = 'ffrp-edition';
+  var EDITION_TAGE = 90;
+
+  /* Heutiges Datum nach deutscher Zeit. Zum Ausprobieren: Steht ?overlaydatum=2026-12-24 in der Adresse, gilt dieses Datum. */
+  function heuteTeile() {
+    var parameter = null;
+    try { parameter = new URLSearchParams(location.search).get('overlaydatum'); } catch (fehler) { /* kein Vorschau-Datum */ }
+    var treffer = parameter ? /^(\d{4})-(\d{2})-(\d{2})$/.exec(parameter) : null;
+    if (treffer) { return { jahr: Number(treffer[1]), monat: Number(treffer[2]), tag: Number(treffer[3]) }; }
+    var teile = { jahr: 0, monat: 0, tag: 0 };
+    try {
+      new Intl.DateTimeFormat('de-DE', { timeZone: 'Europe/Berlin', year: 'numeric', month: '2-digit', day: '2-digit' })
+        .formatToParts(new Date()).forEach(function (teil) {
+          if (teil.type === 'year') { teile.jahr = Number(teil.value); }
+          if (teil.type === 'month') { teile.monat = Number(teil.value); }
+          if (teil.type === 'day') { teile.tag = Number(teil.value); }
+        });
+    } catch (fehler) { /* unten der Ersatz */ }
+    if (!teile.jahr) {
+      var jetzt = new Date();
+      teile = { jahr: jetzt.getFullYear(), monat: jetzt.getMonth() + 1, tag: jetzt.getDate() };
+    }
+    return teile;
+  }
+
+  function tagesnummer(jahr, monat, tag) { return Date.UTC(jahr, monat - 1, tag) / 86400000; }
+
+  /* Liest "01.12." (gilt jedes Jahr) oder "01.12.2026" (nur in diesem Jahr). Gibt bei Fehlern null zurück. */
+  function datumLesen(text) {
+    var treffer = DATUMSANGABE.exec(sauber(text));
+    if (!treffer) { return null; }
+    var tag = Number(treffer[1]);
+    var monat = Number(treffer[2]);
+    if (monat < 1 || monat > 12 || tag < 1 || tag > TAGE_IM_MONAT[monat - 1]) { return null; }
+    return { tag: tag, monat: monat, jahr: treffer[3] ? Number(treffer[3]) : 0 };
+  }
+
+  function angabeLeer(wert) {
+    return wert === undefined || wert === null || (typeof wert === 'string' && wert.trim() === '');
+  }
+
+  /* Gilt heute zwischen von und bis (beide Tage eingeschlossen)? Sind beide Angaben leer, gilt es immer. */
+  function imZeitraum(von, bis, heute) {
+    if (angabeLeer(von) && angabeLeer(bis)) { return true; }
+    var a = datumLesen(von);
+    var b = datumLesen(bis);
+    if (!a || !b) { return false; }
+    if (a.jahr || b.jahr) {
+      var jahrA = a.jahr;
+      var jahrB = b.jahr;
+      if (jahrA && !jahrB) {
+        jahrB = jahrA;
+        if (tagesnummer(jahrB, b.monat, b.tag) < tagesnummer(jahrA, a.monat, a.tag)) { jahrB += 1; }
+      } else if (!jahrA && jahrB) {
+        jahrA = jahrB;
+        if (tagesnummer(jahrA, a.monat, a.tag) > tagesnummer(jahrB, b.monat, b.tag)) { jahrA -= 1; }
+      }
+      var heuteNummer = tagesnummer(heute.jahr, heute.monat, heute.tag);
+      return heuteNummer >= tagesnummer(jahrA, a.monat, a.tag) && heuteNummer <= tagesnummer(jahrB, b.monat, b.tag);
+    }
+    var h = heute.monat * 100 + heute.tag;
+    var anfang = a.monat * 100 + a.tag;
+    var ende = b.monat * 100 + b.tag;
+    return anfang <= ende ? (h >= anfang && h <= ende) : (h >= anfang || h <= ende);
+  }
+
+  /* Sucht den ersten eingeschalteten Eintrag, der heute gilt. Gibt { effekt, staerke, bezeichnung, schalter } oder null zurück. */
+  function overlayWaehlen(daten, heute) {
+    if (!daten || typeof daten !== 'object' || daten.overlays_an === false || !Array.isArray(daten.eintraege)) { return null; }
+    for (var i = 0; i < daten.eintraege.length; i++) {
+      var eintrag = daten.eintraege[i];
+      if (!eintrag || typeof eintrag !== 'object' || eintrag.aktiv === false) { continue; }
+      var effekt = sauber(eintrag.effekt);
+      if (OVERLAY_EFFEKTE.indexOf(effekt) < 0) { continue; }
+      if (imZeitraum(eintrag.von, eintrag.bis, heute)) {
+        var staerke = sauber(eintrag.staerke);
+        return {
+          effekt: effekt,
+          staerke: OVERLAY_STAERKEN.indexOf(staerke) >= 0 ? staerke : 'normal',
+          bezeichnung: sauber(eintrag.bezeichnung).slice(0, 40),
+          schalter: daten.schalter !== false
+        };
+      }
+    }
+    return null;
+  }
+
+  /* Vorschau über die Adresse: ?overlay=schnee (zusätzlich &staerke=viel). Gilt unabhängig vom Zeitplan. */
+  function overlayVorschau() {
+    var name = '';
+    var staerke = '';
+    try {
+      var parameter = new URLSearchParams(location.search);
+      name = sauber(parameter.get('overlay'));
+      staerke = sauber(parameter.get('staerke'));
+    } catch (fehler) { return null; }
+    if (OVERLAY_EFFEKTE.indexOf(name) < 0) { return null; }
+    return { effekt: name, staerke: OVERLAY_STAERKEN.indexOf(staerke) >= 0 ? staerke : 'normal', bezeichnung: '', schalter: true };
+  }
+
+  /* Die Wahl "Original" merkt sich der Browser 90 Tage lang im lokalen Speicher (nur dort, nie an uns gesendet).
+     Gemerkt wird nur, wenn jemand selbst "Original" anklickt, und nur für den jeweiligen Effekt. */
+  function editionAbgewaehlt(effekt) {
+    try {
+      var roh = window.localStorage.getItem(EDITION_SPEICHER);
+      if (!roh) { return false; }
+      var gemerkt = JSON.parse(roh);
+      if (!gemerkt || gemerkt.wahl !== 'original' || gemerkt.effekt !== effekt || typeof gemerkt.zeit !== 'number') { return false; }
+      if (Date.now() - gemerkt.zeit > EDITION_TAGE * 86400000) {
+        window.localStorage.removeItem(EDITION_SPEICHER);
+        return false;
+      }
+      return true;
+    } catch (fehler) { return false; }
+  }
+
+  function editionMerken(effekt, original) {
+    try {
+      if (original) { window.localStorage.setItem(EDITION_SPEICHER, JSON.stringify({ wahl: 'original', effekt: effekt, zeit: Date.now() })); }
+      else { window.localStorage.removeItem(EDITION_SPEICHER); }
+    } catch (fehler) { /* Speicher gesperrt: Die Wahl gilt dann nur für diese Seite. */ }
+  }
+
+  /* overlay.js wird erst geladen, wenn die Edition wirklich gezeigt werden soll. */
+  var overlayStand = { geladen: false, laedt: false, soll: false, wahl: null };
+
+  function overlayAn(wahl) {
+    overlayStand.soll = true;
+    overlayStand.wahl = wahl;
+    if (overlayStand.geladen) {
+      sicher(function () { window.frankfurtOverlay.start(wahl); });
+      return;
+    }
+    if (overlayStand.laedt) { return; }
+    overlayStand.laedt = true;
+    var skript = document.createElement('script');
+    skript.src = 'overlay.js';
+    skript.async = true;
+    skript.onload = function () {
+      overlayStand.laedt = false;
+      overlayStand.geladen = !!window.frankfurtOverlay;
+      if (overlayStand.geladen && overlayStand.soll) {
+        sicher(function () { window.frankfurtOverlay.start(overlayStand.wahl); });
+      }
+    };
+    skript.onerror = function () { overlayStand.laedt = false; };
+    document.head.appendChild(skript);
+  }
+
+  function overlayAus() {
+    overlayStand.soll = false;
+    if (overlayStand.geladen) { sicher(function () { window.frankfurtOverlay.stop(); }); }
+  }
+
+  /* Kleiner Schalter unten rechts: "Winter-Edition | Original". Man kann so immer die normale Seite wählen. */
+  function editionSchalterBauen(wahl, an, vorschau) {
+    var vorgabe = EDITION_VORGABEN[wahl.effekt] || ['', 'Edition'];
+    var behaelter = document.createElement('div');
+    behaelter.className = 'edition-schalter';
+    behaelter.setAttribute('role', 'group');
+    behaelter.setAttribute('aria-label', 'Ansicht der Website wählen');
+    var knopfEdition = document.createElement('button');
+    knopfEdition.type = 'button';
+    knopfEdition.textContent = (vorgabe[0] ? vorgabe[0] + ' ' : '') + (wahl.bezeichnung || vorgabe[1]);
+    var knopfOriginal = document.createElement('button');
+    knopfOriginal.type = 'button';
+    knopfOriginal.textContent = 'Original';
+    function anzeigen(istAn) {
+      knopfEdition.setAttribute('aria-pressed', istAn ? 'true' : 'false');
+      knopfOriginal.setAttribute('aria-pressed', istAn ? 'false' : 'true');
+    }
+    knopfEdition.addEventListener('click', function () {
+      anzeigen(true);
+      if (!vorschau) { editionMerken(wahl.effekt, false); }
+      overlayAn(wahl);
+    });
+    knopfOriginal.addEventListener('click', function () {
+      anzeigen(false);
+      if (!vorschau) { editionMerken(wahl.effekt, true); }
+      overlayAus();
+    });
+    anzeigen(an);
+    behaelter.appendChild(knopfEdition);
+    behaelter.appendChild(knopfOriginal);
+    document.body.appendChild(behaelter);
+  }
+
+  /* Zeigt die Edition (und den Schalter), außer bei "weniger Bewegung" im Betriebssystem. */
+  function overlayStarten(wahl, vorschau) {
+    if (!wahl) { return; }
+    try {
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) { return; }
+    } catch (fehler) { /* weiter */ }
+    var mitSchalter = wahl.schalter !== false;
+    var abgewaehlt = mitSchalter && !vorschau && editionAbgewaehlt(wahl.effekt);
+    if (mitSchalter) { editionSchalterBauen(wahl, !abgewaehlt, vorschau); }
+    if (!abgewaehlt) { overlayAn(wahl); }
+  }
+
   function ohneFehler(versprechen) {
     return versprechen.catch(function () { return null; });
   }
@@ -461,6 +680,19 @@
   }).then(function (daten) {
     sicher(function () { designAnwenden(daten); });
   }).catch(function () { /* Standard-Aussehen bleibt */ });
+
+  /* Overlays (Schnee, Feuerwerk und mehr): entweder die Vorschau aus der Adresse (?overlay=schnee) oder der Zeitplan aus
+     overlays.json. Fehlt die Datei oder gilt heute nichts, wird nichts geladen und nichts verändert. */
+  (function () {
+    var vorschau = overlayVorschau();
+    if (vorschau) { overlayStarten(vorschau, true); return; }
+    fetch('overlays.json', { cache: 'no-cache' }).then(function (antwort) {
+      if (!antwort.ok) { throw new Error('overlays.json: ' + antwort.status); }
+      return antwort.json();
+    }).then(function (daten) {
+      sicher(function () { overlayStarten(overlayWaehlen(daten, heuteTeile()), false); });
+    }).catch(function () { /* kein Overlay */ });
+  })();
 
   var einstellungen = ohneFehler(laden('einstellungen.json'));
   einstellungen.then(function (daten) { sicher(function () { einstellungenAnwenden(daten); }); });
