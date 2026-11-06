@@ -33,8 +33,8 @@
       "name": "Ostern 2027",
       "effekt": "ostern",
       "bezeichnung": "",
-      "von": "24.03.2027",
-      "bis": "29.03.2027",
+      "von": "24.03.",
+      "bis": "29.03.",
       "staerke": "viel",
       "aktiv": true
     },
