@@ -5,80 +5,20 @@
       "titel": "Bewerbung",
       "kennung": "bewerbung",
       "sichtbar": false,
-      "im_menue": true,
+      "im_menue": false,
+      "aufklappbar": false,
       "menuetext": "Bewerbung",
       "beschreibung": "Bewirb dich bei Frankfurt RP.",
       "stand": "Stand: {monat}",
       "inhalt": "## So läuft die Bewerbung\n\n1. Lies zuerst das [Regelwerk](regelwerk.html).\n2. Tritt unserem [Discord](https://discord.gg/vYrSJ22vrX) bei.\n3. Fülle das Formular unten aus.\n4. Das Team meldet sich bei dir auf Discord.\n\n## Voraussetzungen\n\n- Du bist mindestens 16 Jahre alt.\n- Du hast ein Mikrofon und spielst GTA V auf dem PC.\n- Du hältst dich an die Regeln.",
-      "formular": {
-        "aktiv": true,
-        "kanal": "bewerbung",
-        "felder": [
-          {
-            "frage": "Discord-Name",
-            "typ": "kurztext",
-            "pflicht": true,
-            "hinweis": "Damit wir dich auf Discord finden.",
-            "optionen": "",
-            "min": null,
-            "max": null
-          },
-          {
-            "frage": "Wie alt bist du?",
-            "typ": "zahl",
-            "pflicht": true,
-            "hinweis": "Mindestalter: 16 Jahre.",
-            "optionen": "",
-            "min": 16,
-            "max": 99
-          },
-          {
-            "frage": "Wie viel Roleplay-Erfahrung hast du?",
-            "typ": "langtext",
-            "pflicht": true,
-            "hinweis": "Zum Beispiel auf welchen Servern du schon gespielt hast und wie lange.",
-            "optionen": "",
-            "min": null,
-            "max": null
-          },
-          {
-            "frage": "Welchen Charakter möchtest du spielen?",
-            "typ": "langtext",
-            "pflicht": true,
-            "hinweis": "Name, Hintergrund und was ihn ausmacht.",
-            "optionen": "",
-            "min": null,
-            "max": null
-          },
-          {
-            "frage": "Wie hast du von uns erfahren?",
-            "typ": "auswahl",
-            "pflicht": false,
-            "hinweis": "",
-            "optionen": "Discord\nTikTok\nFreunde\nSuchmaschine\nSonstiges",
-            "min": null,
-            "max": null
-          },
-          {
-            "frage": "Ich habe das Regelwerk gelesen und verstanden.",
-            "typ": "bestaetigung",
-            "pflicht": true,
-            "hinweis": "",
-            "optionen": "",
-            "min": null,
-            "max": null
-          }
-        ],
-        "einwilligung": "Ich bin damit einverstanden, dass meine Angaben aus diesem Formular über Discord an das Team von Frankfurt RP übermittelt und dort zur Bearbeitung meiner Bewerbung verwendet werden.",
-        "knopf": "Bewerbung absenden",
-        "erfolg": "**Danke für deine Bewerbung!** Wir melden uns so bald wie möglich bei dir auf Discord."
-      }
+      "formular": null
     },
     {
       "titel": "Neuigkeiten",
       "kennung": "neuigkeiten",
       "sichtbar": true,
       "im_menue": true,
+      "aufklappbar": false,
       "menuetext": "Neuigkeiten",
       "beschreibung": "Neuigkeiten, Änderungen und Termine bei Frankfurt RP.",
       "stand": "Stand: {monat}",
@@ -105,9 +45,9 @@
     {
       "titel": "Support-Anfrage",
       "kennung": "support",
-      "sichtbar": false,
-      "im_menue": false,
-      "aufklappbar": false,
+      "sichtbar": true,
+      "im_menue": true,
+      "aufklappbar": true,
       "menuetext": "Support",
       "beschreibung": "Support-Anfrage bei Frankfurt RP stellen.",
       "stand": "Stand: {monat}",
@@ -116,10 +56,42 @@
         "aktiv": true,
         "kanal": "support",
         "felder": [
-          { "frage": "Discord-Name", "typ": "kurztext", "pflicht": true, "hinweis": "Damit wir dich auf Discord finden.", "optionen": "", "min": null, "max": null },
-          { "frage": "Worum geht es?", "typ": "auswahl", "pflicht": true, "hinweis": "", "optionen": "Frage zum Server\nTechnisches Problem\nBeschwerde über einen Spieler\nSonstiges", "min": null, "max": null },
-          { "frage": "Beschreibe dein Anliegen", "typ": "langtext", "pflicht": true, "hinweis": "Was ist passiert, wann, und wer war beteiligt?", "optionen": "", "min": null, "max": null },
-          { "frage": "Beweise", "typ": "kurztext", "pflicht": false, "hinweis": "Link zu einem Video oder Screenshot, falls vorhanden.", "optionen": "", "min": null, "max": null }
+          {
+            "frage": "Discord-Name",
+            "typ": "kurztext",
+            "pflicht": true,
+            "hinweis": "Damit wir dich auf Discord finden.",
+            "optionen": "",
+            "min": null,
+            "max": null
+          },
+          {
+            "frage": "Worum geht es?",
+            "typ": "auswahl",
+            "pflicht": true,
+            "hinweis": "",
+            "optionen": "Frage zum Server\nTechnisches Problem\nBeschwerde über einen Spieler\nSonstiges",
+            "min": null,
+            "max": null
+          },
+          {
+            "frage": "Beschreibe dein Anliegen",
+            "typ": "langtext",
+            "pflicht": true,
+            "hinweis": "Was ist passiert, wann, und wer war beteiligt?",
+            "optionen": "",
+            "min": null,
+            "max": null
+          },
+          {
+            "frage": "Beweise",
+            "typ": "kurztext",
+            "pflicht": false,
+            "hinweis": "Link zu einem Video oder Screenshot, falls vorhanden.",
+            "optionen": "",
+            "min": null,
+            "max": null
+          }
         ],
         "einwilligung": "Ich bin damit einverstanden, dass meine Angaben aus diesem Formular über Discord an das Team von Frankfurt RP übermittelt und dort zur Bearbeitung meiner Anfrage verwendet werden.",
         "knopf": "Anfrage senden",
@@ -129,9 +101,9 @@
     {
       "titel": "Entbannungsantrag",
       "kennung": "entbannung",
-      "sichtbar": false,
-      "im_menue": false,
-      "aufklappbar": false,
+      "sichtbar": true,
+      "im_menue": true,
+      "aufklappbar": true,
       "menuetext": "Entbannung",
       "beschreibung": "Entbannungsantrag bei Frankfurt RP stellen.",
       "stand": "Stand: {monat}",
@@ -140,11 +112,51 @@
         "aktiv": true,
         "kanal": "entbannung",
         "felder": [
-          { "frage": "Discord-Name", "typ": "kurztext", "pflicht": true, "hinweis": "", "optionen": "", "min": null, "max": null },
-          { "frage": "Spielername", "typ": "kurztext", "pflicht": true, "hinweis": "Dein Name auf dem Server.", "optionen": "", "min": null, "max": null },
-          { "frage": "Warum wurdest du gesperrt?", "typ": "kurztext", "pflicht": true, "hinweis": "", "optionen": "", "min": null, "max": null },
-          { "frage": "Warum sollen wir dich entbannen?", "typ": "langtext", "pflicht": true, "hinweis": "Was hast du eingesehen, und was machst du künftig anders?", "optionen": "", "min": null, "max": null },
-          { "frage": "Ich habe das Regelwerk gelesen und verstanden.", "typ": "bestaetigung", "pflicht": true, "hinweis": "", "optionen": "", "min": null, "max": null }
+          {
+            "frage": "Discord-Name",
+            "typ": "kurztext",
+            "pflicht": true,
+            "hinweis": "",
+            "optionen": "",
+            "min": null,
+            "max": null
+          },
+          {
+            "frage": "Spielername",
+            "typ": "kurztext",
+            "pflicht": true,
+            "hinweis": "Dein Name auf dem Server.",
+            "optionen": "",
+            "min": null,
+            "max": null
+          },
+          {
+            "frage": "Warum wurdest du gesperrt?",
+            "typ": "kurztext",
+            "pflicht": true,
+            "hinweis": "",
+            "optionen": "",
+            "min": null,
+            "max": null
+          },
+          {
+            "frage": "Warum sollen wir dich entbannen?",
+            "typ": "langtext",
+            "pflicht": true,
+            "hinweis": "Was hast du eingesehen, und was machst du künftig anders?",
+            "optionen": "",
+            "min": null,
+            "max": null
+          },
+          {
+            "frage": "Ich habe das Regelwerk gelesen und verstanden.",
+            "typ": "bestaetigung",
+            "pflicht": true,
+            "hinweis": "",
+            "optionen": "",
+            "min": null,
+            "max": null
+          }
         ],
         "einwilligung": "Ich bin damit einverstanden, dass meine Angaben aus diesem Formular über Discord an das Team von Frankfurt RP übermittelt und dort zur Bearbeitung meines Antrags verwendet werden.",
         "knopf": "Antrag senden",
@@ -165,9 +177,33 @@
         "aktiv": true,
         "kanal": "fehler",
         "felder": [
-          { "frage": "Was ist passiert?", "typ": "langtext", "pflicht": true, "hinweis": "Was hast du gemacht, was hast du erwartet, was ist stattdessen passiert?", "optionen": "", "min": null, "max": null },
-          { "frage": "Wo und wann ist es passiert?", "typ": "kurztext", "pflicht": false, "hinweis": "Ort im Spiel und ungefähre Uhrzeit.", "optionen": "", "min": null, "max": null },
-          { "frage": "Discord-Name", "typ": "kurztext", "pflicht": false, "hinweis": "Nur, wenn wir dich bei Rückfragen erreichen sollen.", "optionen": "", "min": null, "max": null }
+          {
+            "frage": "Was ist passiert?",
+            "typ": "langtext",
+            "pflicht": true,
+            "hinweis": "Was hast du gemacht, was hast du erwartet, was ist stattdessen passiert?",
+            "optionen": "",
+            "min": null,
+            "max": null
+          },
+          {
+            "frage": "Wo und wann ist es passiert?",
+            "typ": "kurztext",
+            "pflicht": false,
+            "hinweis": "Ort im Spiel und ungefähre Uhrzeit.",
+            "optionen": "",
+            "min": null,
+            "max": null
+          },
+          {
+            "frage": "Discord-Name",
+            "typ": "kurztext",
+            "pflicht": false,
+            "hinweis": "Nur, wenn wir dich bei Rückfragen erreichen sollen.",
+            "optionen": "",
+            "min": null,
+            "max": null
+          }
         ],
         "einwilligung": "Ich bin damit einverstanden, dass meine Angaben aus diesem Formular über Discord an das Team von Frankfurt RP übermittelt werden.",
         "knopf": "Fehler melden",
@@ -188,12 +224,60 @@
         "aktiv": true,
         "kanal": "fraktion",
         "felder": [
-          { "frage": "Discord-Name", "typ": "kurztext", "pflicht": true, "hinweis": "", "optionen": "", "min": null, "max": null },
-          { "frage": "Für welche Fraktion bewirbst du dich?", "typ": "auswahl", "pflicht": true, "hinweis": "", "optionen": "Fire Department / AMR\nPolice Department / US Marshall\nKlinikum\nEast Custom\nStadtwerke", "min": null, "max": null },
-          { "frage": "Wie alt bist du?", "typ": "zahl", "pflicht": true, "hinweis": "", "optionen": "", "min": 16, "max": 99 },
-          { "frage": "Warum möchtest du in dieser Fraktion spielen?", "typ": "langtext", "pflicht": true, "hinweis": "", "optionen": "", "min": null, "max": null },
-          { "frage": "Welche Erfahrung bringst du mit?", "typ": "langtext", "pflicht": false, "hinweis": "Zum Beispiel Erfahrung in dieser oder einer ähnlichen Rolle.", "optionen": "", "min": null, "max": null },
-          { "frage": "Ich habe das Regelwerk gelesen und verstanden.", "typ": "bestaetigung", "pflicht": true, "hinweis": "", "optionen": "", "min": null, "max": null }
+          {
+            "frage": "Discord-Name",
+            "typ": "kurztext",
+            "pflicht": true,
+            "hinweis": "",
+            "optionen": "",
+            "min": null,
+            "max": null
+          },
+          {
+            "frage": "Für welche Fraktion bewirbst du dich?",
+            "typ": "auswahl",
+            "pflicht": true,
+            "hinweis": "",
+            "optionen": "Fire Department / AMR\nPolice Department / US Marshall\nKlinikum\nEast Custom\nStadtwerke",
+            "min": null,
+            "max": null
+          },
+          {
+            "frage": "Wie alt bist du?",
+            "typ": "zahl",
+            "pflicht": true,
+            "hinweis": "",
+            "optionen": "",
+            "min": 16,
+            "max": 99
+          },
+          {
+            "frage": "Warum möchtest du in dieser Fraktion spielen?",
+            "typ": "langtext",
+            "pflicht": true,
+            "hinweis": "",
+            "optionen": "",
+            "min": null,
+            "max": null
+          },
+          {
+            "frage": "Welche Erfahrung bringst du mit?",
+            "typ": "langtext",
+            "pflicht": false,
+            "hinweis": "Zum Beispiel Erfahrung in dieser oder einer ähnlichen Rolle.",
+            "optionen": "",
+            "min": null,
+            "max": null
+          },
+          {
+            "frage": "Ich habe das Regelwerk gelesen und verstanden.",
+            "typ": "bestaetigung",
+            "pflicht": true,
+            "hinweis": "",
+            "optionen": "",
+            "min": null,
+            "max": null
+          }
         ],
         "einwilligung": "Ich bin damit einverstanden, dass meine Angaben aus diesem Formular über Discord an das Team von Frankfurt RP übermittelt und dort zur Bearbeitung meiner Bewerbung verwendet werden.",
         "knopf": "Bewerbung absenden",
