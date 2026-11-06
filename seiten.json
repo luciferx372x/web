@@ -2,18 +2,6 @@
   "formular_adresse": "https://frankfurt-rp-formular.fwagner372.workers.dev",
   "seiten": [
     {
-      "titel": "Bewerbung",
-      "kennung": "bewerbung",
-      "sichtbar": false,
-      "im_menue": false,
-      "aufklappbar": false,
-      "menuetext": "Bewerbung",
-      "beschreibung": "Bewirb dich bei Frankfurt RP.",
-      "stand": "Stand: {monat}",
-      "inhalt": "## So läuft die Bewerbung\n\n1. Lies zuerst das [Regelwerk](regelwerk.html).\n2. Tritt unserem [Discord](https://discord.gg/vYrSJ22vrX) bei.\n3. Fülle das Formular unten aus.\n4. Das Team meldet sich bei dir auf Discord.\n\n## Voraussetzungen\n\n- Du bist mindestens 16 Jahre alt.\n- Du hast ein Mikrofon und spielst GTA V auf dem PC.\n- Du hältst dich an die Regeln.",
-      "formular": null
-    },
-    {
       "titel": "Neuigkeiten",
       "kennung": "neuigkeiten",
       "sichtbar": true,

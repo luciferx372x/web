@@ -26,11 +26,14 @@
     return k;
   }
 
-  /* Erlaubt sind Links nach außen (https, http, mailto) und Links auf Seiten dieser Website (zum Beispiel impressum.html). */
+  /* Erlaubt sind Links nach außen (https, http, mailto) und Links auf Seiten dieser Website (zum Beispiel impressum.html).
+     Eine E-Mail-Adresse ohne "mailto:" (zum Beispiel [Mail](name@beispiel.de)) wird automatisch zum Mail-Link. */
   var SEITENLINK = /^[A-Za-z0-9][A-Za-z0-9._\-]*\.html(\?[A-Za-z0-9=&_.\-]*)?(#[A-Za-z0-9_\-]+)?$/;
+  var MAILADRESSE = /^[A-Za-z0-9._%+\-]+@[A-Za-z0-9\-]+(\.[A-Za-z0-9\-]+)*\.[A-Za-z]{2,}$/;
 
   function sichererLink(adresse) {
     var text = (adresse || '').trim();
+    if (MAILADRESSE.test(text)) { return 'mailto:' + text; }
     return /^(https?:\/\/|mailto:)/i.test(text) || SEITENLINK.test(text) ? text : '';
   }
 
