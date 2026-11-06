@@ -26,9 +26,12 @@
     return k;
   }
 
+  /* Erlaubt sind Links nach außen (https, http, mailto) und Links auf Seiten dieser Website (zum Beispiel impressum.html). */
+  var SEITENLINK = /^[A-Za-z0-9][A-Za-z0-9._\-]*\.html(\?[A-Za-z0-9=&_.\-]*)?(#[A-Za-z0-9_\-]+)?$/;
+
   function sichererLink(adresse) {
     var text = (adresse || '').trim();
-    return /^(https?:\/\/|mailto:)/i.test(text) ? text : '';
+    return /^(https?:\/\/|mailto:)/i.test(text) || SEITENLINK.test(text) ? text : '';
   }
 
   function ohneMaskierung(text) {

@@ -151,3 +151,109 @@ collections:
             buttons: [bold, italic, link, heading-two, heading-three, heading-four, bulleted-list, numbered-list, quote]
             editor_components: [hr]
             hint: "Schreibe die Regelnummer an den Anfang der Zeile, zum Beispiel 1.1. mit Punkt und Leerzeichen danach, dann erscheint sie links in Rot. Abschnitte mit Überschrift 2, Unterabschnitte mit Überschrift 3 oder 4. Eine Aufzählung direkt unter einer Regel gehört zu dieser Regel. Zitat ergibt einen farbigen Hinweiskasten. Eine Trennlinie macht alles danach zur Schlussbemerkung. Enter beginnt einen neuen Absatz, Umschalt+Enter einen Zeilenumbruch."
+
+  - name: website
+    label: Website
+    description: "Menü, Fußzeile, Überschriften und Texte der Startseite."
+    files:
+      - name: seiteninhalte
+        label: Menü, Fußzeile und Disclaimer
+        file: seiteninhalte.json
+        fields:
+          - { label: Name der Website, name: markenname, widget: string, hint: "Steht oben links neben dem Logo." }
+          - label: Hauptmenü
+            name: navigation
+            label_singular: Menüpunkt
+            widget: list
+            summary: "{{fields.text}}"
+            hint: "Die Reihenfolge lässt sich per Ziehen ändern. Beim Ziel steht entweder der Dateiname einer Seite, zum Beispiel team.html, oder ein kompletter Link mit https://."
+            fields:
+              - { label: Text, name: text, widget: string }
+              - { label: Ziel, name: ziel, widget: string, pattern: ['^(https://[^ ]+|[A-Za-z0-9][A-Za-z0-9._\-]*\.html(\?[A-Za-z0-9=&_.\-]*)?(#[A-Za-z0-9_\-]+)?)$', 'Erlaubt sind Dateinamen wie team.html oder Links mit https://.'], hint: "Dateiname einer Seite oder Link mit https://" }
+          - label: Regelwerke
+            name: regelwerke
+            label_singular: Regelwerk
+            widget: list
+            summary: "{{fields.text}}"
+            hint: "Diese Liste erscheint als Knöpfe auf der Startseite und als Auswahlleiste auf den Regelwerk-Seiten. Der Menüpunkt, der auf das erste Regelwerk zeigt, bleibt auf allen Regelwerk-Seiten markiert."
+            fields:
+              - { label: Text auf dem Knopf, name: text, widget: string }
+              - { label: Kurzer Text für die Auswahlleiste, name: kurztext, widget: string }
+              - { label: Ziel, name: ziel, widget: string, pattern: ['^(https://[^ ]+|[A-Za-z0-9][A-Za-z0-9._\-]*\.html(\?[A-Za-z0-9=&_.\-]*)?(#[A-Za-z0-9_\-]+)?)$', 'Erlaubt sind Dateinamen wie team.html oder Links mit https://.'], hint: "Dateiname einer Seite oder Link mit https://" }
+          - label: Links in der Fußzeile
+            name: fusslinks
+            label_singular: Link
+            widget: list
+            summary: "{{fields.text}}"
+            hint: "Die Reihenfolge lässt sich per Ziehen ändern."
+            fields:
+              - { label: Text, name: text, widget: string }
+              - { label: Ziel, name: ziel, widget: string, pattern: ['^(https://[^ ]+|[A-Za-z0-9][A-Za-z0-9._\-]*\.html(\?[A-Za-z0-9=&_.\-]*)?(#[A-Za-z0-9_\-]+)?)$', 'Erlaubt sind Dateinamen wie team.html oder Links mit https://.'], hint: "Dateiname einer Seite oder Link mit https://" }
+          - { label: Text des Zurück-Knopfs, name: zurueck_text, widget: string, hint: "Steht oben auf den Unterseiten." }
+          - { label: Überschrift des Disclaimers, name: disclaimer_titel, widget: string }
+          - { label: Text des Disclaimers, name: disclaimer_text, widget: text, hint: "Steht unten in der Fußzeile. Die Stand-Angabe darüber änderst du unter Einstellungen." }
+      - name: seitentitel
+        label: Überschriften und Titel der Seiten
+        file: seitentitel.json
+        fields:
+          - label: Seiten
+            name: seiten
+            label_singular: Seite
+            widget: list
+            summary: "{{fields.datei}}"
+            hint: "Für jede Seite gibt es einen Eintrag. Die Datei bestimmt, zu welcher Seite er gehört."
+            fields:
+              - { label: Datei, name: datei, widget: select, options: [index.html, regelwerk.html, regelwerk-ht.html, regelwerk-at.html, pol-regelwerk.html, medic-regelwerk.html, regelwerk-illegale-fraktionen.html, team.html, nutzungsbedingungen.html, datenschutz.html, impressum.html] }
+              - { label: Überschrift auf der Seite, name: ueberschrift, widget: string }
+              - { label: Titel im Browser-Tab, name: browsertitel, widget: string }
+              - { label: Kurzbeschreibung für Suchmaschinen, name: beschreibung, widget: text, required: false }
+      - name: startseite
+        label: Startseite
+        file: startseite.json
+        fields:
+          - { label: Beschreibung des großen Banners, name: hero_alt, widget: string, required: false, hint: "Wird von Screenreadern vorgelesen und erscheint, wenn das Bild nicht lädt." }
+          - { label: Überschrift der Regelwerk-Karte, name: regeln_ueberschrift, widget: string, hint: "Unsichtbar, nur für Screenreader." }
+          - { label: Beschreibung des Regelwerk-Banners, name: regeln_bild_alt, widget: string, required: false }
+          - { label: Überschrift der Social-Media-Karte, name: social_ueberschrift, widget: string, hint: "Unsichtbar, nur für Screenreader." }
+          - { label: Beschreibung des Social-Media-Banners, name: social_bild_alt, widget: string, required: false }
+
+  - name: rechtstexte
+    label: Rechtstexte
+    description: "Impressum, Datenschutz und Nutzungsbedingungen. Änderungen hier sind sofort öffentlich, bitte mit Sorgfalt und im Zweifel rechtlich prüfen lassen."
+    files:
+      - name: impressum
+        label: Impressum
+        file: recht-impressum.json
+        fields:
+          - { label: Dokumenttitel, name: dokumenttitel, widget: string, required: false, hint: "Kleine Zeile über dem Text, kann leer bleiben." }
+          - { label: Stand, name: stand, widget: string, required: false, hint: "Kleine Zeile unter dem Titel, zum Beispiel: Stand: November 2026. Kann leer bleiben." }
+          - label: Text
+            name: inhalt
+            widget: markdown
+            buttons: [bold, italic, link, heading-two, heading-three, heading-four, bulleted-list, numbered-list, quote]
+            editor_components: [hr]
+            hint: "Zeilenumbruch innerhalb eines Absatzes mit Umschalt+Enter, neuer Absatz mit Enter. Eine Trennlinie macht alles danach zur kleinen Schlussbemerkung. Links auf andere Seiten dieser Website schreibst du als Dateiname, zum Beispiel impressum.html."
+      - name: datenschutz
+        label: Datenschutzrichtlinie
+        file: recht-datenschutz.json
+        fields:
+          - { label: Dokumenttitel, name: dokumenttitel, widget: string, required: false, hint: "Kleine Zeile über dem Text, kann leer bleiben." }
+          - { label: Stand, name: stand, widget: string, required: false, hint: "Kleine Zeile unter dem Titel, zum Beispiel: Stand: November 2026. Kann leer bleiben." }
+          - label: Text
+            name: inhalt
+            widget: markdown
+            buttons: [bold, italic, link, heading-two, heading-three, heading-four, bulleted-list, numbered-list, quote]
+            editor_components: [hr]
+            hint: "Zeilenumbruch innerhalb eines Absatzes mit Umschalt+Enter, neuer Absatz mit Enter. Eine Trennlinie macht alles danach zur kleinen Schlussbemerkung. Links auf andere Seiten dieser Website schreibst du als Dateiname, zum Beispiel impressum.html."
+      - name: nutzungsbedingungen
+        label: Nutzungsbedingungen
+        file: recht-nutzungsbedingungen.json
+        fields:
+          - { label: Dokumenttitel, name: dokumenttitel, widget: string, required: false, hint: "Kleine Zeile über dem Text, kann leer bleiben." }
+          - { label: Stand, name: stand, widget: string, required: false, hint: "Kleine Zeile unter dem Titel, zum Beispiel: Stand: April 2026. Kann leer bleiben." }
+          - label: Text
+            name: inhalt
+            widget: markdown
+            buttons: [bold, italic, link, heading-two, heading-three, heading-four, bulleted-list, numbered-list, quote]
+            editor_components: [hr]
+            hint: "Zeilenumbruch innerhalb eines Absatzes mit Umschalt+Enter, neuer Absatz mit Enter. Eine Trennlinie macht alles danach zur kleinen Schlussbemerkung. Links auf andere Seiten dieser Website schreibst du als Dateiname, zum Beispiel impressum.html."
