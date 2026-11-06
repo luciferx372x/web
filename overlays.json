@@ -8,7 +8,7 @@
       "bezeichnung": "",
       "von": "05.11.",
       "bis": "26.12.",
-      "staerke": "normal",
+      "staerke": "viel",
       "aktiv": true
     },
     {
@@ -17,7 +17,7 @@
       "bezeichnung": "",
       "von": "31.12.",
       "bis": "01.01.",
-      "staerke": "normal",
+      "staerke": "viel",
       "aktiv": true
     },
     {
@@ -26,7 +26,7 @@
       "bezeichnung": "",
       "von": "13.02.",
       "bis": "14.02.",
-      "staerke": "wenig",
+      "staerke": "viel",
       "aktiv": true
     },
     {
@@ -35,7 +35,7 @@
       "bezeichnung": "",
       "von": "24.03.2027",
       "bis": "29.03.2027",
-      "staerke": "normal",
+      "staerke": "viel",
       "aktiv": true
     },
     {
@@ -44,7 +44,7 @@
       "bezeichnung": "",
       "von": "25.10.",
       "bis": "01.11.",
-      "staerke": "normal",
+      "staerke": "viel",
       "aktiv": true
     },
     {
@@ -53,7 +53,7 @@
       "bezeichnung": "",
       "von": "01.10.",
       "bis": "24.10.",
-      "staerke": "wenig",
+      "staerke": "viel",
       "aktiv": false
     }
   ]
