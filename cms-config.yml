@@ -333,7 +333,7 @@ collections:
                 default: schnee
                 options:
                   - { label: Schneefall, value: schnee }
-                  - { label: Weihnachten (Schnee und funkelnde Sterne), value: weihnachten }
+                  - { label: "Weihnachten (Schnee, Sterne, Bäume, Kugeln, Geschenke und mehr)", value: weihnachten }
                   - { label: Funkelnde Sterne, value: sterne }
                   - { label: Konfetti, value: konfetti }
                   - { label: Feuerwerk, value: feuerwerk }

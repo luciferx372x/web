@@ -4,7 +4,9 @@
    - Es werden keine Bilder und keine fremden Dienste geladen. Alles wird auf einer durchsichtigen Fläche gezeichnet.
    - Die Fläche fängt keine Klicks ab (pointer-events: none) und wird nicht gedruckt.
    - Ist im Betriebssystem "weniger Bewegung" eingestellt, wird nichts gezeigt.
-   - Bewegst du die Maus über die Seite, werden die Teilchen leicht weggeschubst (je schneller die Maus, desto stärker). */
+   - Bewegst du die Maus über die Seite, werden die Teilchen leicht weggeschubst (je schneller die Maus, desto stärker).
+   - Die Winter-Edition (Effekt "weihnachten") zeigt zu Schnee und Sternen auch kleine Weihnachtsbäume, Kugeln, Sterne,
+     Geschenke, Zuckerstangen, Glocken und mehr. Diese Motive sind selbst gezeichnet, es gibt dafür keine Bilddateien. */
 (function () {
   'use strict';
 
@@ -234,6 +236,458 @@
     });
   }
 
+  /* ---------- Weihnachtsmotive: selbst gezeichnet, damit sie bei allen Besuchern gleich aussehen ---------- */
+
+  var ZWEI_PI = Math.PI * 2;
+
+  function rundesRechteck(x, links, oben, breite, hoehe, radius) {
+    x.beginPath();
+    x.moveTo(links + radius, oben);
+    x.arcTo(links + breite, oben, links + breite, oben + hoehe, radius);
+    x.arcTo(links + breite, oben + hoehe, links, oben + hoehe, radius);
+    x.arcTo(links, oben + hoehe, links, oben, radius);
+    x.arcTo(links, oben, links + breite, oben, radius);
+    x.closePath();
+  }
+
+  function sternPfad(x, mx, my, aussen, innen, spitzen) {
+    x.beginPath();
+    for (var i = 0; i < spitzen * 2; i++) {
+      var radius = i % 2 === 0 ? aussen : innen;
+      var winkel = -Math.PI / 2 + i * Math.PI / spitzen;
+      var px = mx + Math.cos(winkel) * radius;
+      var py = my + Math.sin(winkel) * radius;
+      if (i === 0) { x.moveTo(px, py); } else { x.lineTo(px, py); }
+    }
+    x.closePath();
+  }
+
+  function linearVerlauf(x, x1, y1, x2, y2, farben) {
+    var v = x.createLinearGradient(x1, y1, x2, y2);
+    for (var i = 0; i < farben.length; i++) { v.addColorStop(farben[i][0], farben[i][1]); }
+    return v;
+  }
+
+  function tupfen(x, px, py, radius, farbe) {
+    x.fillStyle = farbe;
+    x.beginPath();
+    x.arc(px, py, radius, 0, ZWEI_PI);
+    x.fill();
+  }
+
+  function baumSprite() {
+    return spriteBauen(32, 40, function (x) {
+      var etagen = [[17, 34, 14], [11, 26, 11], [6.5, 18, 8]]; /* Spitze, Fuß, halbe Breite */
+      var lichter = [[13.2, 15.3, '#ff6b6b'], [18.8, 14.7, '#ffd43b'], [11.6, 22.2, '#ffd43b'], [20.6, 22.4, '#ff6b6b'], [16.2, 23.4, '#74c0fc'],
+        [8.2, 30.6, '#74c0fc'], [15.4, 28.9, '#ff6b6b'], [22.8, 30.2, '#ffd43b'], [19.4, 31.6, '#74c0fc']];
+      var i;
+      x.lineJoin = 'round';
+      x.fillStyle = '#8a5a2b';
+      x.fillRect(13.5, 33, 5, 5.5);
+      for (i = 0; i < etagen.length; i++) {
+        x.fillStyle = linearVerlauf(x, 0, etagen[i][0], 0, etagen[i][1], [[0, '#5fcf6f'], [1, '#1f8a3a']]);
+        x.strokeStyle = '#2a9a45';
+        x.lineWidth = 1.6;
+        x.beginPath();
+        x.moveTo(16, etagen[i][0] + 0.8);
+        x.lineTo(16 + etagen[i][2] - 0.8, etagen[i][1] - 0.8);
+        x.lineTo(16 - etagen[i][2] + 0.8, etagen[i][1] - 0.8);
+        x.closePath();
+        x.fill();
+        x.stroke();
+      }
+      x.fillStyle = 'rgba(255,255,255,0.93)';
+      for (i = 0; i < etagen.length; i++) {
+        var spitze = etagen[i][0];
+        var hoehe = (etagen[i][1] - spitze) * 0.4;
+        var breite = etagen[i][2] * 0.4;
+        x.beginPath();
+        x.moveTo(16, spitze + 0.3);
+        x.lineTo(16 + breite + 0.6, spitze + hoehe);
+        x.quadraticCurveTo(16 + breite * 0.55, spitze + hoehe + 2.4, 16, spitze + hoehe - 0.3);
+        x.quadraticCurveTo(16 - breite * 0.55, spitze + hoehe + 2.4, 16 - breite - 0.6, spitze + hoehe);
+        x.closePath();
+        x.fill();
+      }
+      for (i = 0; i < lichter.length; i++) { tupfen(x, lichter[i][0], lichter[i][1], 1.35, lichter[i][2]); }
+      sternPfad(x, 16, 6.1, 4.8, 2.1, 5);
+      x.fillStyle = linearVerlauf(x, 0, 1, 0, 10, [[0, '#fff3bf'], [1, '#fcc419']]);
+      x.fill();
+      x.strokeStyle = '#f08c00';
+      x.lineWidth = 0.7;
+      x.stroke();
+    });
+  }
+
+  var KUGEL_FARBEN = {
+    rot: ['#ff9a9a', '#e03131', '#8e1414'],
+    gold: ['#fff0a0', '#fcc419', '#b87500'],
+    blau: ['#a5d8ff', '#339af0', '#0c4a8a'],
+    gruen: ['#b2f2bb', '#37b24d', '#17632a'],
+    silber: ['#ffffff', '#ced4da', '#6b747d'],
+    violett: ['#eebefa', '#be4bdb', '#6a1b82']
+  };
+
+  var KUGEL_MUSTER = {
+    streifen: function (x, mx, my, r) {
+      x.fillStyle = 'rgba(255,255,255,0.55)';
+      x.fillRect(mx - r, my - 2.6, 2 * r, 2.4);
+      x.fillRect(mx - r, my + 1.6, 2 * r, 1.2);
+    },
+    punkte: function (x, mx, my) {
+      var stellen = [[-5, -3], [1, -6.5], [6, -1.5], [-2, 1], [3.5, 4.5], [-6.5, 5], [0.5, 8.3]];
+      for (var i = 0; i < stellen.length; i++) { tupfen(x, mx + stellen[i][0], my + stellen[i][1], 1.2, 'rgba(255,255,255,0.6)'); }
+    },
+    zickzack: function (x, mx, my, r) {
+      x.strokeStyle = 'rgba(255,255,255,0.65)';
+      x.lineWidth = 1.2;
+      x.lineJoin = 'round';
+      x.beginPath();
+      for (var i = 0; i < 8; i++) {
+        var px = mx - r + i * 3.2;
+        var py = my + (i % 2 ? 2.4 : -2.4);
+        if (i) { x.lineTo(px, py); } else { x.moveTo(px, py); }
+      }
+      x.stroke();
+    }
+  };
+
+  function kugelSprite(farben, muster) {
+    return spriteBauen(26, 34, function (x) {
+      var mx = 13;
+      var my = 21.5;
+      var r = 11;
+      var v = x.createRadialGradient(mx - 3.8, my - 5, 1, mx, my, r + 1);
+      x.strokeStyle = '#e0a800';
+      x.lineWidth = 1.3;
+      x.beginPath();
+      x.arc(mx, 4.2, 2.5, 0, ZWEI_PI);
+      x.stroke();
+      v.addColorStop(0, farben[0]);
+      v.addColorStop(0.5, farben[1]);
+      v.addColorStop(1, farben[2]);
+      x.fillStyle = v;
+      x.beginPath();
+      x.arc(mx, my, r, 0, ZWEI_PI);
+      x.fill();
+      if (muster) {
+        x.save();
+        x.beginPath();
+        x.arc(mx, my, r, 0, ZWEI_PI);
+        x.clip();
+        muster(x, mx, my, r);
+        x.restore();
+      }
+      x.fillStyle = linearVerlauf(x, mx - 3.4, 0, mx + 3.4, 0, [[0, '#fff0a0'], [0.5, '#f2c230'], [1, '#b8860b']]);
+      x.fillRect(mx - 3.4, 6.6, 6.8, 4.6);
+      x.fillStyle = 'rgba(255,255,255,0.7)';
+      x.beginPath();
+      x.ellipse(mx - 4.4, my - 5.6, 2.8, 1.6, -0.75, 0, ZWEI_PI);
+      x.fill();
+    });
+  }
+
+  function goldSternSprite() {
+    return spriteBauen(28, 28, function (x) {
+      var halo = x.createRadialGradient(14, 14, 0, 14, 14, 13.5);
+      halo.addColorStop(0, 'rgba(255,224,102,0.55)');
+      halo.addColorStop(1, 'rgba(255,224,102,0)');
+      x.fillStyle = halo;
+      x.fillRect(0, 0, 28, 28);
+      x.lineJoin = 'round';
+      sternPfad(x, 14, 14.2, 11, 4.9, 5);
+      x.fillStyle = linearVerlauf(x, 4, 3, 24, 24, [[0, '#fff3bf'], [0.5, '#ffd43b'], [1, '#f59f00']]);
+      x.fill();
+      x.strokeStyle = '#f08c00';
+      x.lineWidth = 1;
+      x.stroke();
+      sternPfad(x, 14, 14.2, 5.4, 2.4, 5);
+      x.fillStyle = 'rgba(255,255,255,0.45)';
+      x.fill();
+    });
+  }
+
+  function geschenkSprite(kasten, deckel, band) {
+    return spriteBauen(28, 30, function (x) {
+      x.fillStyle = linearVerlauf(x, 3.5, 0, 24.5, 0, [[0, kasten[0]], [1, kasten[1]]]);
+      x.fillRect(3.5, 14, 21, 14.5);
+      x.fillStyle = linearVerlauf(x, 2, 0, 26, 0, [[0, deckel[0]], [1, deckel[1]]]);
+      x.fillRect(2, 10.5, 24, 5.5);
+      x.fillStyle = 'rgba(0,0,0,0.2)';
+      x.fillRect(3.5, 16, 21, 1.3);
+      x.fillStyle = band;
+      x.fillRect(12, 10.5, 4, 18);
+      x.strokeStyle = band;
+      x.lineWidth = 2;
+      x.beginPath();
+      x.ellipse(9.4, 7.2, 4.4, 2.8, -0.55, 0, ZWEI_PI);
+      x.stroke();
+      x.beginPath();
+      x.ellipse(18.6, 7.2, 4.4, 2.8, 0.55, 0, ZWEI_PI);
+      x.stroke();
+      tupfen(x, 14, 9.4, 2.2, band);
+      x.fillStyle = 'rgba(255,255,255,0.22)';
+      x.fillRect(3.5, 14, 2.6, 14.5);
+    });
+  }
+
+  function zuckerstangeSprite() {
+    return spriteBauen(26, 34, function (x) {
+      var i;
+      function weg() {
+        x.beginPath();
+        x.moveTo(8, 30);
+        x.lineTo(8, 11);
+        x.arc(14, 11, 6, Math.PI, 0, false);
+        x.lineTo(20, 14.5);
+      }
+      x.lineCap = 'round';
+      x.lineJoin = 'round';
+      x.lineWidth = 5.6;
+      x.strokeStyle = '#f8f9fa';
+      weg();
+      x.stroke();
+      /* Rote Schrägstreifen, nur dort, wo die Stange schon gezeichnet ist */
+      x.globalCompositeOperation = 'source-atop';
+      x.strokeStyle = '#e03131';
+      x.lineWidth = 2.7;
+      x.lineCap = 'butt';
+      for (i = -5; i <= 4; i++) {
+        x.beginPath();
+        x.moveTo(i * 7.4, 36);
+        x.lineTo(i * 7.4 + 36, 0);
+        x.stroke();
+      }
+      x.globalCompositeOperation = 'source-over';
+      x.strokeStyle = 'rgba(255,255,255,0.5)';
+      x.lineWidth = 1;
+      x.lineCap = 'round';
+      x.beginPath();
+      x.moveTo(6.6, 28);
+      x.lineTo(6.6, 12);
+      x.stroke();
+    });
+  }
+
+  function glockeSprite() {
+    return spriteBauen(28, 32, function (x) {
+      x.fillStyle = '#a86d00';
+      x.beginPath();
+      x.ellipse(14, 24.2, 11.5, 2.1, 0, 0, ZWEI_PI);
+      x.fill();
+      tupfen(x, 14, 26.4, 2.6, '#e8a500');
+      x.fillStyle = linearVerlauf(x, 3, 0, 25, 0, [[0, '#ffe58a'], [0.45, '#fcc419'], [1, '#d9910b']]);
+      x.beginPath();
+      x.moveTo(14, 6);
+      x.bezierCurveTo(20.5, 6, 21.3, 12.5, 22, 17.5);
+      x.quadraticCurveTo(22.6, 21, 25.5, 24.2);
+      x.lineTo(2.5, 24.2);
+      x.quadraticCurveTo(5.4, 21, 6, 17.5);
+      x.bezierCurveTo(6.7, 12.5, 7.5, 6, 14, 6);
+      x.closePath();
+      x.fill();
+      x.strokeStyle = 'rgba(255,255,255,0.55)';
+      x.lineWidth = 1.4;
+      x.lineCap = 'round';
+      x.beginPath();
+      x.moveTo(10.2, 9.6);
+      x.quadraticCurveTo(8.7, 14, 8.3, 19);
+      x.stroke();
+      x.fillStyle = '#e03131';
+      x.beginPath();
+      x.moveTo(14, 4.4);
+      x.lineTo(8.6, 1.6);
+      x.lineTo(8.6, 6.8);
+      x.closePath();
+      x.moveTo(14, 4.4);
+      x.lineTo(19.4, 1.6);
+      x.lineTo(19.4, 6.8);
+      x.closePath();
+      x.fill();
+      tupfen(x, 14, 4.4, 1.5, '#b81d1d');
+    });
+  }
+
+  function lebkuchenSprite() {
+    return spriteBauen(28, 32, function (x) {
+      function gestalt(zusatz, farbe) {
+        x.strokeStyle = farbe;
+        x.lineCap = 'round';
+        x.lineWidth = 5 + zusatz;
+        tupfen(x, 14, 7.4, 5.2 + zusatz / 2, farbe);
+        x.beginPath();
+        x.ellipse(14, 17, 5.6 + zusatz / 2, 6.6 + zusatz / 2, 0, 0, ZWEI_PI);
+        x.fill();
+        x.beginPath();
+        x.moveTo(11, 14.5);
+        x.lineTo(4.6, 12.8);
+        x.moveTo(17, 14.5);
+        x.lineTo(23.4, 12.8);
+        x.moveTo(11.4, 21);
+        x.lineTo(7.8, 27);
+        x.moveTo(16.6, 21);
+        x.lineTo(20.2, 27);
+        x.stroke();
+      }
+      gestalt(1.6, '#8c4f1b');
+      gestalt(0, '#cd8238');
+      tupfen(x, 12.4, 6.4, 0.75, '#fff6e6');
+      tupfen(x, 15.6, 6.4, 0.75, '#fff6e6');
+      x.strokeStyle = '#fff6e6';
+      x.lineWidth = 0.9;
+      x.lineCap = 'round';
+      x.beginPath();
+      x.arc(14, 7.2, 2.4, 0.25 * Math.PI, 0.75 * Math.PI);
+      x.stroke();
+      tupfen(x, 14, 14.6, 1.05, '#e03131');
+      tupfen(x, 14, 17.8, 1.05, '#40c057');
+      tupfen(x, 14, 21, 1.05, '#e03131');
+      tupfen(x, 4.6, 12.8, 1.1, '#fff6e6');
+      tupfen(x, 23.4, 12.8, 1.1, '#fff6e6');
+      tupfen(x, 7.8, 27, 1.1, '#fff6e6');
+      tupfen(x, 20.2, 27, 1.1, '#fff6e6');
+    });
+  }
+
+  function stechpalmeSprite() {
+    return spriteBauen(32, 26, function (x) {
+      function blatt(winkel) {
+        x.save();
+        x.translate(16, 17);
+        x.rotate(winkel);
+        x.beginPath();
+        for (var i = 0; i <= 48; i++) {
+          var t = i / 48 * ZWEI_PI;
+          var zacke = 1 - 0.24 * Math.abs(Math.sin(t * 3));
+          var px = 8 + Math.cos(t) * 8 * zacke;
+          var py = Math.sin(t) * 4.5 * zacke;
+          if (i === 0) { x.moveTo(px, py); } else { x.lineTo(px, py); }
+        }
+        x.closePath();
+        x.fillStyle = linearVerlauf(x, 0, -4.5, 0, 4.5, [[0, '#46c75f'], [1, '#1b6b30']]);
+        x.fill();
+        x.strokeStyle = 'rgba(255,255,255,0.3)';
+        x.lineWidth = 0.9;
+        x.beginPath();
+        x.moveTo(1, 0);
+        x.lineTo(14.5, 0);
+        x.stroke();
+        x.restore();
+      }
+      blatt(-2.5);
+      blatt(-0.64);
+      tupfen(x, 16, 17.4, 3, '#e03131');
+      tupfen(x, 12.4, 19.8, 2.8, '#d32626');
+      tupfen(x, 19.6, 19.8, 2.8, '#e03131');
+      tupfen(x, 15.1, 16.3, 0.85, 'rgba(255,255,255,0.7)');
+      tupfen(x, 11.6, 18.8, 0.8, 'rgba(255,255,255,0.6)');
+      tupfen(x, 18.8, 18.8, 0.8, 'rgba(255,255,255,0.6)');
+    });
+  }
+
+  function muetzeSprite() {
+    return spriteBauen(30, 30, function (x) {
+      var v = x.createRadialGradient(20.6, 4.8, 0.5, 21.5, 5.8, 3.8);
+      x.fillStyle = linearVerlauf(x, 4, 0, 26, 0, [[0, '#ff6b6b'], [1, '#c92a2a']]);
+      x.beginPath();
+      x.moveTo(5, 21.5);
+      x.quadraticCurveTo(6, 8.5, 20.5, 5.5);
+      x.quadraticCurveTo(26, 11, 25.5, 21.5);
+      x.closePath();
+      x.fill();
+      x.fillStyle = linearVerlauf(x, 0, 18.5, 0, 26.5, [[0, '#ffffff'], [1, '#d5dbe3']]);
+      rundesRechteck(x, 2.5, 18.5, 25, 8, 4);
+      x.fill();
+      v.addColorStop(0, '#ffffff');
+      v.addColorStop(1, '#cfd6df');
+      x.fillStyle = v;
+      x.beginPath();
+      x.arc(21.5, 5.8, 3.8, 0, ZWEI_PI);
+      x.fill();
+    });
+  }
+
+  function schneemannSprite() {
+    return spriteBauen(28, 38, function (x) {
+      function kugel(cx, cy, r) {
+        var v = x.createRadialGradient(cx - r * 0.35, cy - r * 0.4, r * 0.1, cx, cy, r);
+        v.addColorStop(0, '#ffffff');
+        v.addColorStop(0.65, '#eef3fb');
+        v.addColorStop(1, '#b9c7dd');
+        x.fillStyle = v;
+        x.beginPath();
+        x.arc(cx, cy, r, 0, ZWEI_PI);
+        x.fill();
+      }
+      x.lineCap = 'round';
+      x.strokeStyle = '#8a5a2b';
+      x.lineWidth = 1.5;
+      x.beginPath();
+      x.moveTo(6.5, 25);
+      x.lineTo(2, 21);
+      x.moveTo(21.5, 25);
+      x.lineTo(26, 21);
+      x.stroke();
+      kugel(14, 27.5, 8.6);
+      kugel(14, 14.6, 6.3);
+      tupfen(x, 14, 24.2, 1.1, '#343a40');
+      tupfen(x, 14, 28.2, 1.1, '#343a40');
+      tupfen(x, 14, 32.2, 1.1, '#343a40');
+      x.fillStyle = '#e03131';
+      rundesRechteck(x, 7.6, 19.6, 12.8, 3.4, 1.6);
+      x.fill();
+      x.fillRect(16.2, 21.5, 3.4, 7);
+      tupfen(x, 12, 13.1, 0.9, '#212529');
+      tupfen(x, 16, 13.1, 0.9, '#212529');
+      x.fillStyle = '#f76707';
+      x.beginPath();
+      x.moveTo(14, 14.3);
+      x.lineTo(19.2, 15.6);
+      x.lineTo(14, 16.7);
+      x.closePath();
+      x.fill();
+      x.fillStyle = '#495057';
+      x.fillRect(7.8, 7.4, 12.4, 1.9);
+      rundesRechteck(x, 10, 0.8, 8, 7.2, 1);
+      x.fill();
+      x.fillStyle = '#e03131';
+      x.fillRect(10, 5.4, 8, 1.5);
+    });
+  }
+
+  function sockeSprite() {
+    return spriteBauen(26, 32, function (x) {
+      function umriss() {
+        x.beginPath();
+        x.moveTo(7.5, 3.5);
+        x.lineTo(17.5, 3.5);
+        x.lineTo(17.5, 17.2);
+        x.bezierCurveTo(17.5, 19, 19, 19.5, 21, 19.8);
+        x.bezierCurveTo(24.2, 20.3, 25.2, 22.6, 25.2, 25);
+        x.bezierCurveTo(25.2, 27.4, 23.8, 28.6, 21.8, 28.6);
+        x.lineTo(10.6, 28.6);
+        x.bezierCurveTo(7.2, 28.6, 5.8, 26.2, 6.3, 23.4);
+        x.closePath();
+      }
+      x.fillStyle = linearVerlauf(x, 6, 0, 25, 0, [[0, '#ff6b6b'], [1, '#c92a2a']]);
+      umriss();
+      x.fill();
+      x.save();
+      umriss();
+      x.clip();
+      x.fillStyle = '#f1f3f5';
+      x.fillRect(22, 18, 6, 14);
+      x.fillRect(4, 22.5, 6.4, 8);
+      x.restore();
+      x.fillStyle = linearVerlauf(x, 0, 2, 0, 8.6, [[0, '#ffffff'], [1, '#d5dbe3']]);
+      rundesRechteck(x, 5.6, 2, 14.2, 6.6, 2.6);
+      x.fill();
+      tupfen(x, 11, 12.2, 1, 'rgba(255,255,255,0.8)');
+      tupfen(x, 14.4, 14.6, 1, 'rgba(255,255,255,0.8)');
+      tupfen(x, 11.4, 16.8, 1, 'rgba(255,255,255,0.8)');
+    });
+  }
+
   /* ---------- Effekt "fallende Teilchen": Schnee, Konfetti, Laub, Herzen, Ostern, Halloween ---------- */
 
   function fallEffekt(konfig) {
@@ -242,7 +696,7 @@
       var teile = [];
 
       function anzahlBerechnen() {
-        var flaeche = begrenzen((umgebung.breite * umgebung.hoehe) / (1600 * 900), 0.45, 1.6);
+        var flaeche = begrenzen((umgebung.breite * umgebung.hoehe) / (1600 * 900), konfig.flaecheMin || 0.45, 1.6);
         return Math.max(6, Math.round(konfig.anzahl * flaeche * umgebung.staerke));
       }
 
@@ -253,6 +707,7 @@
         teil.flipV = 0;
         teil.wellenY = 0;
         teil.spiegeln = 1;
+        teil.wippe = 0;
         konfig.neu(teil, umgebung, sprites, anfang);
         return teil;
       }
@@ -269,7 +724,7 @@
           for (var i = 0; i < teile.length; i++) {
             var p = teile[i];
             p.phase += p.phaseV * dt;
-            p.rot += p.rotV * dt;
+            if (p.wippe) { p.rot = p.wippe * Math.cos(p.phase); } else { p.rot += p.rotV * dt; } /* wippen = hin und her schwingen, sonst drehen */
             if (p.flipV) { p.flip += p.flipV * dt; }
             schubsen(p, dt);
             p.x += (p.vx + Math.sin(p.phase) * p.schwing + p.sx) * dt;
@@ -463,6 +918,77 @@
     }
   };
 
+  /* ---------- Weihnachtsmotive als fallende Teilchen (gehört zur Winter-Edition) ---------- */
+
+  var GESCHENK_FARBEN = [
+    [['#f55b5b', '#c92a2a'], ['#ff7b7b', '#e03131'], '#ffd43b'],
+    [['#3d9df2', '#1c6fc4'], ['#63b3fa', '#2b8be0'], '#f1f3f5'],
+    [['#4bc965', '#2b8a3e'], ['#74dd8a', '#3fbf58'], '#fa5252'],
+    [['#b44bd1', '#862e9c'], ['#d070e8', '#b44bd1'], '#ffd43b'],
+    [['#eceff2', '#aeb6bf'], ['#ffffff', '#d3d9df'], '#e03131']
+  ];
+
+  var KUGEL_ARTEN = [['rot'], ['rot', 'streifen'], ['gold'], ['gold', 'punkte'], ['blau'], ['blau', 'zickzack'], ['gruen'], ['gruen', 'punkte'],
+    ['silber'], ['silber', 'streifen'], ['violett'], ['violett', 'punkte']];
+
+  /* gewicht = wie oft das Motiv vorkommt, wippe = pendelt hin und her (Höchstausschlag in Bogenmaß), dreh = dreht sich langsam,
+     groesse = kleinster und größter Maßstab */
+  function weihnachtsSprites() {
+    return [
+      { art: 'kugel', gewicht: 10, wippe: [0.1, 0.28], groesse: [0.8, 1.15],
+        liste: KUGEL_ARTEN.map(function (a) { return kugelSprite(KUGEL_FARBEN[a[0]], a[1] ? KUGEL_MUSTER[a[1]] : null); }) },
+      { art: 'baum', gewicht: 6, wippe: [0.12, 0.32], groesse: [0.85, 1.2], liste: [baumSprite()] },
+      { art: 'stern', gewicht: 4, dreh: [0.5, 1.1], groesse: [0.7, 1.1], liste: [goldSternSprite()] },
+      { art: 'geschenk', gewicht: 3, dreh: [0.25, 0.7], groesse: [0.8, 1.1],
+        liste: GESCHENK_FARBEN.map(function (f) { return geschenkSprite(f[0], f[1], f[2]); }) },
+      { art: 'zuckerstange', gewicht: 3, dreh: [0.4, 0.9], groesse: [0.8, 1.15], liste: [zuckerstangeSprite()] },
+      { art: 'glocke', gewicht: 2, wippe: [0.25, 0.5], groesse: [0.8, 1.1], liste: [glockeSprite()] },
+      { art: 'lebkuchen', gewicht: 2, dreh: [0.3, 0.8], groesse: [0.85, 1.15], liste: [lebkuchenSprite()] },
+      { art: 'stechpalme', gewicht: 2, dreh: [0.3, 0.8], groesse: [0.8, 1.1], liste: [stechpalmeSprite()] },
+      { art: 'muetze', gewicht: 1.5, wippe: [0.2, 0.4], groesse: [0.8, 1.1], liste: [muetzeSprite()] },
+      { art: 'schneemann', gewicht: 1.5, wippe: [0.12, 0.3], groesse: [0.8, 1.1], liste: [schneemannSprite()] },
+      { art: 'socke', gewicht: 1.5, wippe: [0.15, 0.35], groesse: [0.8, 1.1], liste: [sockeSprite()] }
+    ];
+  }
+
+  var weihnachtsKonfig = {
+    anzahl: 20,
+    flaecheMin: 0.3, /* auf kleinen Bildschirmen (Handy) etwas weniger, die Motive sind größer als Schneeflocken */
+    sprites: weihnachtsSprites,
+    neu: function (p, u, s, anfang) {
+      var summe = 0;
+      var i;
+      for (i = 0; i < s.length; i++) { summe += s[i].gewicht; }
+      var wurf = Math.random() * summe;
+      var motiv = s[s.length - 1];
+      for (i = 0; i < s.length; i++) {
+        wurf -= s[i].gewicht;
+        if (wurf < 0) { motiv = s[i]; break; }
+      }
+      var tiefe = Math.random(); /* 0 = weit hinten (kleiner, langsamer, blasser), 1 = weit vorn */
+      p.art = motiv.art;
+      p.sprite = waehlen(motiv.liste);
+      p.skala = (motiv.groesse[0] + (motiv.groesse[1] - motiv.groesse[0]) * tiefe) * begrenzen(u.breite / 1280, 0.85, 1.25); /* auf großen Bildschirmen etwas größer, auf dem Handy etwas kleiner */
+      p.x = zufall(0, u.breite);
+      p.y = anfang ? zufall(0, u.hoehe) : zufall(-50, -14);
+      p.vx = zufall(-5, 5);
+      p.vy = 24 + 34 * tiefe + zufall(0, 8);
+      p.schwing = zufall(10, 26);
+      p.phase = zufall(0, 6.28);
+      p.phaseV = zufall(0.5, 1.2);
+      if (motiv.wippe) {
+        p.wippe = zufall(motiv.wippe[0], motiv.wippe[1]);
+        p.rot = 0;
+        p.rotV = 0;
+      } else {
+        p.rot = zufall(0, 6.28);
+        p.rotV = zufall(motiv.dreh[0], motiv.dreh[1]) * (Math.random() < 0.5 ? -1 : 1);
+      }
+      p.alpha = 0.72 + 0.26 * tiefe;
+      p.leicht = 1 / (0.45 + p.skala * 0.8);
+    }
+  };
+
   /* ---------- Effekt "funkelnde Sterne" ---------- */
 
   function sterneEffekt(anzahlBasis) {
@@ -644,7 +1170,7 @@
   var EFFEKTE = {
     schnee: fallEffekt(schneeKonfig(85)),
     sterne: sterneEffekt(28),
-    weihnachten: kombi([fallEffekt(schneeKonfig(72)), sterneEffekt(16)]),
+    weihnachten: kombi([fallEffekt(schneeKonfig(72)), fallEffekt(weihnachtsKonfig), sterneEffekt(16)]),
     konfetti: fallEffekt(konfettiKonfig),
     feuerwerk: feuerwerkEffekt,
     laub: fallEffekt(laubKonfig),
