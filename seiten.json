@@ -14,12 +14,60 @@
         "aktiv": true,
         "kanal": "bewerbung",
         "felder": [
-          { "frage": "Discord-Name", "typ": "kurztext", "pflicht": true, "hinweis": "Damit wir dich auf Discord finden." },
-          { "frage": "Wie alt bist du?", "typ": "zahl", "pflicht": true, "hinweis": "Mindestalter: 16 Jahre.", "min": 16, "max": 99 },
-          { "frage": "Wie viel Roleplay-Erfahrung hast du?", "typ": "langtext", "pflicht": true, "hinweis": "Zum Beispiel auf welchen Servern du schon gespielt hast und wie lange." },
-          { "frage": "Welchen Charakter möchtest du spielen?", "typ": "langtext", "pflicht": true, "hinweis": "Name, Hintergrund und was ihn ausmacht." },
-          { "frage": "Wie hast du von uns erfahren?", "typ": "auswahl", "pflicht": false, "optionen": "Discord\nTikTok\nFreunde\nSuchmaschine\nSonstiges" },
-          { "frage": "Ich habe das Regelwerk gelesen und verstanden.", "typ": "bestaetigung", "pflicht": true }
+          {
+            "frage": "Discord-Name",
+            "typ": "kurztext",
+            "pflicht": true,
+            "hinweis": "Damit wir dich auf Discord finden.",
+            "optionen": "",
+            "min": null,
+            "max": null
+          },
+          {
+            "frage": "Wie alt bist du?",
+            "typ": "zahl",
+            "pflicht": true,
+            "hinweis": "Mindestalter: 16 Jahre.",
+            "optionen": "",
+            "min": 16,
+            "max": 99
+          },
+          {
+            "frage": "Wie viel Roleplay-Erfahrung hast du?",
+            "typ": "langtext",
+            "pflicht": true,
+            "hinweis": "Zum Beispiel auf welchen Servern du schon gespielt hast und wie lange.",
+            "optionen": "",
+            "min": null,
+            "max": null
+          },
+          {
+            "frage": "Welchen Charakter möchtest du spielen?",
+            "typ": "langtext",
+            "pflicht": true,
+            "hinweis": "Name, Hintergrund und was ihn ausmacht.",
+            "optionen": "",
+            "min": null,
+            "max": null
+          },
+          {
+            "frage": "Wie hast du von uns erfahren?",
+            "typ": "auswahl",
+            "pflicht": false,
+            "hinweis": "",
+            "optionen": "Discord\nTikTok\nFreunde\nSuchmaschine\nSonstiges",
+            "min": null,
+            "max": null
+          },
+          {
+            "frage": "Ich habe das Regelwerk gelesen und verstanden.",
+            "typ": "bestaetigung",
+            "pflicht": true,
+            "hinweis": "",
+            "optionen": "",
+            "min": null,
+            "max": null
+          }
         ],
         "einwilligung": "Ich bin damit einverstanden, dass meine Angaben aus diesem Formular über Discord an das Team von Frankfurt RP übermittelt und dort zur Bearbeitung meiner Bewerbung verwendet werden.",
         "knopf": "Bewerbung absenden",
@@ -29,7 +77,7 @@
     {
       "titel": "Neuigkeiten",
       "kennung": "neuigkeiten",
-      "sichtbar": false,
+      "sichtbar": true,
       "im_menue": true,
       "menuetext": "Neuigkeiten",
       "beschreibung": "Neuigkeiten, Änderungen und Termine bei Frankfurt RP.",
@@ -38,8 +86,18 @@
       "formular": {
         "aktiv": false,
         "kanal": "bewerbung",
-        "felder": [],
-        "einwilligung": "",
+        "felder": [
+          {
+            "frage": "t",
+            "typ": "kurztext",
+            "pflicht": true,
+            "hinweis": "",
+            "optionen": "",
+            "min": null,
+            "max": null
+          }
+        ],
+        "einwilligung": "t",
         "knopf": "Absenden",
         "erfolg": ""
       }
