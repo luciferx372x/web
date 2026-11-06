@@ -1,0 +1,26 @@
+name: Status an Discord melden
+
+# Läuft, sobald sich einstellungen.json im Hauptzweig ändert (zum Beispiel beim Speichern im Admin).
+# Das Skript status-discord.mjs entscheidet, ob eine Nachricht an Discord geht.
+on:
+  push:
+    branches: [main]
+    paths: [einstellungen.json]
+
+permissions:
+  contents: read
+
+jobs:
+  melden:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Nachricht an Discord senden
+        env:
+          DISCORD_STATUS_WEBHOOK: ${{ secrets.DISCORD_STATUS_WEBHOOK }}
+          DISCORD_STATUS_PING: ${{ vars.DISCORD_STATUS_PING }}
+          VOR_COMMIT: ${{ github.event.before }}
+          NACH_COMMIT: ${{ github.sha }}
+        run: node status-discord.mjs
