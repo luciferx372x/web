@@ -1,0 +1,70 @@
+{
+  "seiten": [
+    {
+      "datei": "index.html",
+      "ueberschrift": "Frankfurt RP – Startseite",
+      "browsertitel": "Frankfurt RP – Startseite",
+      "beschreibung": "Frankfurt RP: Regelwerke, Team und Community unseres GTA-V-Roleplay-Projekts."
+    },
+    {
+      "datei": "regelwerk.html",
+      "ueberschrift": "Regelwerk",
+      "browsertitel": "Regelwerk – Frankfurt RP",
+      "beschreibung": "Das allgemeine Regelwerk von Frankfurt RP."
+    },
+    {
+      "datei": "regelwerk-ht.html",
+      "ueberschrift": "Regelwerk HT",
+      "browsertitel": "Regelwerk HT – Frankfurt RP",
+      "beschreibung": "Regelwerk HT von Frankfurt RP: Support-Bestimmungen und Funktionsbestimmungen."
+    },
+    {
+      "datei": "regelwerk-at.html",
+      "ueberschrift": "Regelwerk AT",
+      "browsertitel": "Regelwerk AT – Frankfurt RP",
+      "beschreibung": "Regelwerk AT von Frankfurt RP: Begriffsklärung."
+    },
+    {
+      "datei": "pol-regelwerk.html",
+      "ueberschrift": "Pol Regelwerk",
+      "browsertitel": "Pol Regelwerk – Frankfurt RP",
+      "beschreibung": "Das Polizeiregelwerk von Frankfurt RP."
+    },
+    {
+      "datei": "medic-regelwerk.html",
+      "ueberschrift": "Medic Regelwerk",
+      "browsertitel": "Medic Regelwerk – Frankfurt RP",
+      "beschreibung": "Das Medic-Regelwerk von Frankfurt RP."
+    },
+    {
+      "datei": "regelwerk-illegale-fraktionen.html",
+      "ueberschrift": "Regelwerk für Illegale Fraktionen",
+      "browsertitel": "Regelwerk für Illegale Fraktionen – Frankfurt RP",
+      "beschreibung": "Das Regelwerk für illegale Fraktionen von Frankfurt RP."
+    },
+    {
+      "datei": "team.html",
+      "ueberschrift": "Team",
+      "browsertitel": "Team – Frankfurt RP",
+      "beschreibung": "Das Team von Frankfurt RP."
+    },
+    {
+      "datei": "nutzungsbedingungen.html",
+      "ueberschrift": "Nutzungsbedingungen",
+      "browsertitel": "Nutzungsbedingungen – Frankfurt RP",
+      "beschreibung": "Nutzungsbedingungen der Website von Frankfurt RP."
+    },
+    {
+      "datei": "datenschutz.html",
+      "ueberschrift": "Datenschutzrichtlinie",
+      "browsertitel": "Datenschutzrichtlinie – Frankfurt RP",
+      "beschreibung": "Datenschutzrichtlinie der Website von Frankfurt RP."
+    },
+    {
+      "datei": "impressum.html",
+      "ueberschrift": "Impressum",
+      "browsertitel": "Impressum – Frankfurt RP",
+      "beschreibung": "Impressum der Website von Frankfurt RP."
+    }
+  ]
+}

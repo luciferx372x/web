@@ -1,0 +1,70 @@
+{
+  "markenname": "Frankfurt RP",
+  "navigation": [
+    {
+      "text": "Startseite",
+      "ziel": "index.html"
+    },
+    {
+      "text": "Regelwerk",
+      "ziel": "regelwerk.html"
+    },
+    {
+      "text": "Team",
+      "ziel": "team.html"
+    }
+  ],
+  "regelwerke": [
+    {
+      "text": "Regelwerk",
+      "kurztext": "Regelwerk",
+      "ziel": "regelwerk.html"
+    },
+    {
+      "text": "Regelwerk HT",
+      "kurztext": "Regelwerk HT",
+      "ziel": "regelwerk-ht.html"
+    },
+    {
+      "text": "Regelwerk AT",
+      "kurztext": "Regelwerk AT",
+      "ziel": "regelwerk-at.html"
+    },
+    {
+      "text": "Pol Regelwerk",
+      "kurztext": "Pol Regelwerk",
+      "ziel": "pol-regelwerk.html"
+    },
+    {
+      "text": "Medic Regelwerk",
+      "kurztext": "Medic Regelwerk",
+      "ziel": "medic-regelwerk.html"
+    },
+    {
+      "text": "Regelwerk für Illegale Fraktionen",
+      "kurztext": "Illegale Fraktionen",
+      "ziel": "regelwerk-illegale-fraktionen.html"
+    }
+  ],
+  "fusslinks": [
+    {
+      "text": "Team",
+      "ziel": "team.html"
+    },
+    {
+      "text": "Nutzungsbedingungen",
+      "ziel": "nutzungsbedingungen.html"
+    },
+    {
+      "text": "Datenschutzrichtlinie",
+      "ziel": "datenschutz.html"
+    },
+    {
+      "text": "Impressum",
+      "ziel": "impressum.html"
+    }
+  ],
+  "zurueck_text": "← Zurück zur Startseite",
+  "disclaimer_titel": "Disclaimer – Wichtiger Hinweis zum Projekt",
+  "disclaimer_text": "Alle Inhalte, Personen und Dokumente auf frankfurt-rp.xyz sind frei erfunden und dienen ausschließlich dem Rollenspiel innerhalb des Projekts Frankfurt RP. Es besteht keine reale Rechtsgültigkeit sowie keinerlei Verbindung zu realen Behörden, Gerichten oder staatlichen Institutionen. GTA V ist ein eingetragenes Markenzeichen von Rockstar Games / Take-Two Interactive."
+}
