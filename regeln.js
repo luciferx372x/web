@@ -352,10 +352,48 @@
     return inhaltBauen(bloeckeLesen(text.split('\n')));
   }
 
-  function dokumentZuKnoten(daten) {
+  /* ---------- Stand: Monat der letzten Änderung ---------- */
+
+  /* Monat im Format 11.2026, gerechnet nach deutscher Zeit (gleiche Funktion wie in site.js). */
+  function monatText(datum) {
+    var monat = '';
+    var jahr = '';
+    try {
+      new Intl.DateTimeFormat('de-DE', { timeZone: 'Europe/Berlin', month: '2-digit', year: 'numeric' })
+        .formatToParts(datum).forEach(function (teil) {
+          if (teil.type === 'month') { monat = teil.value; }
+          if (teil.type === 'year') { jahr = teil.value; }
+        });
+    } catch (fehler) {
+      monat = ('0' + (datum.getMonth() + 1)).slice(-2);
+      jahr = String(datum.getFullYear());
+    }
+    return monat && jahr ? monat + '.' + jahr : '';
+  }
+
+  /* Monat der letzten Änderung der Datei laut Server (Last-Modified), leer wenn nicht bekannt. */
+  function monatAusAntwort(antwort) {
+    try {
+      var kopf = antwort.headers.get('Last-Modified');
+      var zeit = kopf ? new Date(kopf) : null;
+      return zeit && !isNaN(zeit.getTime()) ? monatText(zeit) : '';
+    } catch (fehler) {
+      return '';
+    }
+  }
+
+  /* {monat} im Text wird durch den Monat ersetzt. Ist der Monat nicht bekannt, bleibt der Text leer,
+     damit nie "{monat}" auf der Seite steht. */
+  function standMitMonat(text, monat) {
+    var klar = String(text || '').trim();
+    if (!/\{monat\}/i.test(klar)) { return klar; }
+    return monat ? klar.replace(/\{monat\}/gi, monat) : '';
+  }
+
+  function dokumentZuKnoten(daten, monat) {
     var ergebnis = document.createDocumentFragment();
     var titel = daten && typeof daten.dokumenttitel === 'string' ? daten.dokumenttitel.trim() : '';
-    var stand = daten && typeof daten.stand === 'string' ? daten.stand.trim() : '';
+    var stand = daten && typeof daten.stand === 'string' ? standMitMonat(daten.stand, monat) : '';
     if (titel) { ergebnis.appendChild(knoten('p', 'doc-title', titel)); }
     if (stand) { ergebnis.appendChild(knoten('p', 'doc-meta', stand)); }
     ergebnis.appendChild(markdownZuKnoten(daten ? daten.inhalt : ''));
@@ -370,10 +408,11 @@
 
     fetch(quelle, { cache: 'no-cache' }).then(function (antwort) {
       if (!antwort.ok) { throw new Error(quelle + ': ' + antwort.status); }
-      return antwort.json();
-    }).then(function (daten) {
+      var monat = monatAusAntwort(antwort);
+      return antwort.json().then(function (daten) { return { daten: daten, monat: monat }; });
+    }).then(function (ergebnis) {
       behaelter.textContent = '';
-      behaelter.appendChild(dokumentZuKnoten(daten));
+      behaelter.appendChild(dokumentZuKnoten(ergebnis.daten, ergebnis.monat));
       behaelter.removeAttribute('aria-busy');
     }).catch(function () {
       behaelter.textContent = '';

@@ -5,6 +5,9 @@
    - seiteninhalte.json   Name der Website, Menü, Regelwerk-Liste, Fußzeile, Disclaimer
    - seitentitel.json     Überschrift, Browsertitel und Beschreibung jeder Seite
    - startseite.json      Texte der Startseite
+   Stand-Angaben: Steht {monat} im Text, setzt die Seite den Monat der letzten Änderung ein
+   (aus "Stand: {monat}" wird zum Beispiel "Stand: 11.2026"). Den Monat liefert der Server
+   mit dem Änderungsdatum der Datei (Last-Modified), niemand muss ihn von Hand pflegen.
    Ohne JavaScript oder wenn eine Datei fehlt, bleibt der feste Inhalt der Seite stehen.
    Es werden nur Dateien von dieser Domain geladen, keine externen Dienste. */
 (function () {
@@ -12,15 +15,63 @@
 
   var SEITENZIEL = /^[A-Za-z0-9][A-Za-z0-9._\-]*\.html(\?[A-Za-z0-9=&_.\-]*)?(#[A-Za-z0-9_\-]+)?$/;
 
+  /* Zeitpunkt der letzten Änderung jeder geladenen Datei, wie der Server ihn meldet (Last-Modified). */
+  var zeiten = {};
+
+  function zeitMerken(datei, antwort) {
+    try {
+      var kopf = antwort.headers.get('Last-Modified');
+      var zeit = kopf ? new Date(kopf) : null;
+      if (zeit && !isNaN(zeit.getTime())) { zeiten[datei] = zeit; }
+    } catch (fehler) { /* kein Datum bekannt */ }
+  }
+
   function laden(datei) {
     return fetch(datei, { cache: 'no-cache' }).then(function (antwort) {
       if (!antwort.ok) { throw new Error(datei + ': ' + antwort.status); }
+      zeitMerken(datei, antwort);
       return antwort.json();
     });
   }
 
   function sauber(wert) {
     return typeof wert === 'string' ? wert.trim() : '';
+  }
+
+  /* ---------- Stand: Monat der letzten Änderung ---------- */
+
+  /* Monat im Format 11.2026, gerechnet nach deutscher Zeit. */
+  function monatText(datum) {
+    var monat = '';
+    var jahr = '';
+    try {
+      new Intl.DateTimeFormat('de-DE', { timeZone: 'Europe/Berlin', month: '2-digit', year: 'numeric' })
+        .formatToParts(datum).forEach(function (teil) {
+          if (teil.type === 'month') { monat = teil.value; }
+          if (teil.type === 'year') { jahr = teil.value; }
+        });
+    } catch (fehler) {
+      monat = ('0' + (datum.getMonth() + 1)).slice(-2);
+      jahr = String(datum.getFullYear());
+    }
+    return monat && jahr ? monat + '.' + jahr : '';
+  }
+
+  /* Monat der neuesten Änderung unter allen bisher geladenen Dateien. */
+  function neuesterMonat() {
+    var neueste = null;
+    Object.keys(zeiten).forEach(function (datei) {
+      if (!neueste || zeiten[datei] > neueste) { neueste = zeiten[datei]; }
+    });
+    return neueste ? monatText(neueste) : '';
+  }
+
+  /* {monat} im Text wird durch den Monat ersetzt. Ist der Monat nicht bekannt, bleibt der Text leer,
+     damit nie "{monat}" auf der Seite steht. */
+  function standMitMonat(text, monat) {
+    var klar = sauber(text);
+    if (!/\{monat\}/i.test(klar)) { return klar; }
+    return monat ? klar.replace(/\{monat\}/gi, monat) : '';
   }
 
   /* Nur Links mit https:// zulassen, alles andere wird ignoriert. */
@@ -98,10 +149,16 @@
       eintrag.hidden = !ziel;
       if (ziel) { symbol.href = ziel; }
     });
+  }
 
+  /* ---------- Stand-Angabe in der Fußzeile (aus einstellungen.json) ---------- */
+
+  function standAnwenden(daten) {
     var stand = document.querySelector('.disclaimer .stand');
-    var standText = sauber(daten.stand);
-    if (stand && standText) { stand.textContent = standText; }
+    if (!stand) { return; }
+    var text = daten && typeof daten === 'object' ? standMitMonat(daten.stand, neuesterMonat()) : '';
+    stand.textContent = text;
+    stand.hidden = !text;
   }
 
   /* ---------- team.json ---------- */
@@ -239,18 +296,21 @@
     try { arbeit(); } catch (fehler) { /* fester Inhalt bleibt */ }
   }
 
-  laden('einstellungen.json').then(einstellungenAnwenden).catch(function () { /* fester Inhalt bleibt */ });
+  var einstellungen = ohneFehler(laden('einstellungen.json'));
+  einstellungen.then(function (daten) { sicher(function () { einstellungenAnwenden(daten); }); });
   if (document.querySelector('dl.team')) {
     laden('team.json').then(teamAnwenden).catch(function () { /* fester Inhalt bleibt */ });
   }
 
   Promise.all([
+    einstellungen,
     ohneFehler(laden('seiteninhalte.json')),
     ohneFehler(laden('seitentitel.json')),
     ohneFehler(laden('startseite.json'))
   ]).then(function (ergebnis) {
-    sicher(function () { seiteninhalteAnwenden(ergebnis[0]); });
-    sicher(function () { seitentitelAnwenden(ergebnis[1]); });
-    sicher(function () { startseiteAnwenden(ergebnis[2], ergebnis[0]); });
+    sicher(function () { seiteninhalteAnwenden(ergebnis[1]); });
+    sicher(function () { seitentitelAnwenden(ergebnis[2]); });
+    sicher(function () { startseiteAnwenden(ergebnis[3], ergebnis[1]); });
+    sicher(function () { standAnwenden(ergebnis[0]); });
   });
 })();

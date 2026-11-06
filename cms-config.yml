@@ -56,7 +56,7 @@ collections:
             name: stand
             widget: string
             required: false
-            hint: "Zum Beispiel: Stand: 08.2026"
+            hint: "Schreibe {monat}, dann setzt die Seite den Monat der letzten Änderung selbst ein. Zum Beispiel: Stand: {monat}. Leer lassen, dann steht dort nichts."
 
   - name: team
     label: Team
@@ -84,7 +84,7 @@ collections:
         file: regeln-allgemein.json
         fields:
           - { label: Dokumenttitel, name: dokumenttitel, widget: string, required: false, hint: "Kleine Zeile über dem Text." }
-          - { label: Stand, name: stand, widget: string, required: false, hint: "Kleine Zeile unter dem Titel, zum Beispiel: Stand: 11.08.2026. Leer lassen, wenn nichts angezeigt werden soll." }
+          - { label: Stand, name: stand, widget: string, required: false, hint: "Kleine Zeile unter dem Titel. Schreibe {monat}, dann steht dort automatisch der Monat der letzten Änderung, zum Beispiel: Stand: {monat}. Leer lassen, wenn nichts angezeigt werden soll." }
           - label: Text
             name: inhalt
             widget: markdown
@@ -96,7 +96,7 @@ collections:
         file: regeln-ht.json
         fields:
           - { label: Dokumenttitel, name: dokumenttitel, widget: string, required: false, hint: "Kleine Zeile über dem Text." }
-          - { label: Stand, name: stand, widget: string, required: false, hint: "Kleine Zeile unter dem Titel, zum Beispiel: Stand: 11.08.2026. Leer lassen, wenn nichts angezeigt werden soll." }
+          - { label: Stand, name: stand, widget: string, required: false, hint: "Kleine Zeile unter dem Titel. Schreibe {monat}, dann steht dort automatisch der Monat der letzten Änderung, zum Beispiel: Stand: {monat}. Leer lassen, wenn nichts angezeigt werden soll." }
           - label: Text
             name: inhalt
             widget: markdown
@@ -108,7 +108,7 @@ collections:
         file: regeln-at.json
         fields:
           - { label: Dokumenttitel, name: dokumenttitel, widget: string, required: false, hint: "Kleine Zeile über dem Text." }
-          - { label: Stand, name: stand, widget: string, required: false, hint: "Kleine Zeile unter dem Titel, zum Beispiel: Stand: 11.08.2026. Leer lassen, wenn nichts angezeigt werden soll." }
+          - { label: Stand, name: stand, widget: string, required: false, hint: "Kleine Zeile unter dem Titel. Schreibe {monat}, dann steht dort automatisch der Monat der letzten Änderung, zum Beispiel: Stand: {monat}. Leer lassen, wenn nichts angezeigt werden soll." }
           - label: Text
             name: inhalt
             widget: markdown
@@ -120,7 +120,7 @@ collections:
         file: regeln-polizei.json
         fields:
           - { label: Dokumenttitel, name: dokumenttitel, widget: string, required: false, hint: "Kleine Zeile über dem Text." }
-          - { label: Stand, name: stand, widget: string, required: false, hint: "Kleine Zeile unter dem Titel, zum Beispiel: Stand: 11.08.2026. Leer lassen, wenn nichts angezeigt werden soll." }
+          - { label: Stand, name: stand, widget: string, required: false, hint: "Kleine Zeile unter dem Titel. Schreibe {monat}, dann steht dort automatisch der Monat der letzten Änderung, zum Beispiel: Stand: {monat}. Leer lassen, wenn nichts angezeigt werden soll." }
           - label: Text
             name: inhalt
             widget: markdown
@@ -132,7 +132,7 @@ collections:
         file: regeln-medic.json
         fields:
           - { label: Dokumenttitel, name: dokumenttitel, widget: string, required: false, hint: "Kleine Zeile über dem Text." }
-          - { label: Stand, name: stand, widget: string, required: false, hint: "Kleine Zeile unter dem Titel, zum Beispiel: Stand: 11.08.2026. Leer lassen, wenn nichts angezeigt werden soll." }
+          - { label: Stand, name: stand, widget: string, required: false, hint: "Kleine Zeile unter dem Titel. Schreibe {monat}, dann steht dort automatisch der Monat der letzten Änderung, zum Beispiel: Stand: {monat}. Leer lassen, wenn nichts angezeigt werden soll." }
           - label: Text
             name: inhalt
             widget: markdown
@@ -144,7 +144,7 @@ collections:
         file: regeln-illegale.json
         fields:
           - { label: Dokumenttitel, name: dokumenttitel, widget: string, required: false, hint: "Kleine Zeile über dem Text." }
-          - { label: Stand, name: stand, widget: string, required: false, hint: "Kleine Zeile unter dem Titel, zum Beispiel: Stand: 11.08.2026. Leer lassen, wenn nichts angezeigt werden soll." }
+          - { label: Stand, name: stand, widget: string, required: false, hint: "Kleine Zeile unter dem Titel. Schreibe {monat}, dann steht dort automatisch der Monat der letzten Änderung, zum Beispiel: Stand: {monat}. Leer lassen, wenn nichts angezeigt werden soll." }
           - label: Text
             name: inhalt
             widget: markdown
@@ -226,7 +226,7 @@ collections:
         file: recht-impressum.json
         fields:
           - { label: Dokumenttitel, name: dokumenttitel, widget: string, required: false, hint: "Kleine Zeile über dem Text, kann leer bleiben." }
-          - { label: Stand, name: stand, widget: string, required: false, hint: "Kleine Zeile unter dem Titel, zum Beispiel: Stand: November 2026. Kann leer bleiben." }
+          - { label: Stand, name: stand, widget: string, required: false, hint: "Kleine Zeile unter dem Titel. Schreibe {monat}, dann steht dort automatisch der Monat der letzten Änderung, zum Beispiel: Stand: {monat}. Kann leer bleiben." }
           - label: Text
             name: inhalt
             widget: markdown
@@ -238,7 +238,7 @@ collections:
         file: recht-datenschutz.json
         fields:
           - { label: Dokumenttitel, name: dokumenttitel, widget: string, required: false, hint: "Kleine Zeile über dem Text, kann leer bleiben." }
-          - { label: Stand, name: stand, widget: string, required: false, hint: "Kleine Zeile unter dem Titel, zum Beispiel: Stand: November 2026. Kann leer bleiben." }
+          - { label: Stand, name: stand, widget: string, required: false, hint: "Kleine Zeile unter dem Titel. Schreibe {monat}, dann steht dort automatisch der Monat der letzten Änderung, zum Beispiel: Stand: {monat}. Kann leer bleiben." }
           - label: Text
             name: inhalt
             widget: markdown
@@ -250,7 +250,7 @@ collections:
         file: recht-nutzungsbedingungen.json
         fields:
           - { label: Dokumenttitel, name: dokumenttitel, widget: string, required: false, hint: "Kleine Zeile über dem Text, kann leer bleiben." }
-          - { label: Stand, name: stand, widget: string, required: false, hint: "Kleine Zeile unter dem Titel, zum Beispiel: Stand: April 2026. Kann leer bleiben." }
+          - { label: Stand, name: stand, widget: string, required: false, hint: "Kleine Zeile unter dem Titel. Schreibe {monat}, dann steht dort automatisch der Monat der letzten Änderung, zum Beispiel: Stand: {monat}. Kann leer bleiben." }
           - label: Text
             name: inhalt
             widget: markdown
