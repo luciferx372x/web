@@ -400,6 +400,195 @@
     return ergebnis;
   }
 
+  /* ---------- Werkzeuge für Regelwerke: Suche, Inhaltsverzeichnis, Drucken ---------- */
+
+  /* Vereinfacht Text für die Suche: Kleinbuchstaben, ohne Akzente und Umlautpunkte, ß wird ss.
+     Gibt den vereinfachten Text und für jedes Zeichen die Stelle im Originaltext zurück. */
+  function falten(text) {
+    var falt = '';
+    var zuordnung = [];
+    for (var i = 0; i < text.length; i += 1) {
+      var zeichen = text.charAt(i);
+      var einfach = zeichen === 'ß' ? 'ss' : zeichen.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+      for (var k = 0; k < einfach.length; k += 1) { falt += einfach.charAt(k); zuordnung.push(i); }
+    }
+    return { falt: falt, zuordnung: zuordnung };
+  }
+
+  function markenEntfernen(wurzel) {
+    Array.prototype.slice.call(wurzel.querySelectorAll('mark.treffer')).forEach(function (marke) {
+      var eltern = marke.parentNode;
+      eltern.replaceChild(document.createTextNode(marke.textContent), marke);
+      eltern.normalize();
+    });
+  }
+
+  /* Hebt alle Fundstellen der Suchwörter im Element hervor. */
+  function markieren(element, woerter) {
+    var laeufer = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null);
+    var textknoten = [];
+    while (laeufer.nextNode()) { textknoten.push(laeufer.currentNode); }
+    textknoten.forEach(function (knotenText) {
+      var wert = knotenText.nodeValue;
+      var gefaltet = falten(wert);
+      var bereiche = [];
+      woerter.forEach(function (wort) {
+        var von = 0;
+        for (;;) {
+          var stelle = gefaltet.falt.indexOf(wort, von);
+          if (stelle < 0) { break; }
+          bereiche.push([gefaltet.zuordnung[stelle], gefaltet.zuordnung[stelle + wort.length - 1] + 1]);
+          von = stelle + Math.max(1, wort.length);
+        }
+      });
+      if (!bereiche.length) { return; }
+      bereiche.sort(function (a, b) { return a[0] - b[0]; });
+      var zusammen = [bereiche[0]];
+      bereiche.slice(1).forEach(function (bereich) {
+        var letzter = zusammen[zusammen.length - 1];
+        if (bereich[0] <= letzter[1]) { letzter[1] = Math.max(letzter[1], bereich[1]); } else { zusammen.push(bereich); }
+      });
+      var teile = document.createDocumentFragment();
+      var position = 0;
+      zusammen.forEach(function (bereich) {
+        if (bereich[0] > position) { teile.appendChild(document.createTextNode(wert.slice(position, bereich[0]))); }
+        var marke = knoten('mark', 'treffer', wert.slice(bereich[0], bereich[1]));
+        teile.appendChild(marke);
+        position = bereich[1];
+      });
+      if (position < wert.length) { teile.appendChild(document.createTextNode(wert.slice(position))); }
+      knotenText.parentNode.replaceChild(teile, knotenText);
+    });
+  }
+
+  /* Setzt über ein Regelwerk eine Suche, ein Inhaltsverzeichnis und einen Knopf zum Drucken. */
+  function werkzeugeBauen(artikel) {
+    var eintraege = [];
+    var ueberschriften = [];
+    var listen = [];
+    var offene = [];
+
+    Array.prototype.slice.call(artikel.children).forEach(function (el) {
+      if (el.classList.contains('doc-title') || el.classList.contains('doc-meta')) { return; }
+      if (/^H[2-4]$/.test(el.tagName)) {
+        var ebene = parseInt(el.tagName.charAt(1), 10);
+        var ueberschrift = { el: el, ebene: ebene, falt: falten(el.textContent).falt, eintraege: [] };
+        offene = offene.filter(function (andere) { return andere.ebene < ebene; });
+        offene.push(ueberschrift);
+        ueberschriften.push(ueberschrift);
+        return;
+      }
+      var istListe = el.matches('ul.rules');
+      var stuecke = istListe ? Array.prototype.slice.call(el.children) : [el];
+      if (istListe) { listen.push(el); }
+      stuecke.forEach(function (stueck) {
+        var eintrag = { el: stueck, falt: falten(stueck.textContent).falt, passt: false };
+        eintraege.push(eintrag);
+        offene.forEach(function (ueberschrift) { ueberschrift.eintraege.push(eintrag); });
+      });
+    });
+
+    artikel.id = artikel.id || 'dokument';
+    var leiste = knoten('div', 'werkzeuge');
+    var zeile = knoten('div', 'suche');
+    zeile.setAttribute('role', 'search');
+    var etikett = knoten('label', 'visually-hidden', 'Im Regelwerk suchen');
+    etikett.setAttribute('for', 'regel-suche');
+    var eingabe = document.createElement('input');
+    eingabe.type = 'search';
+    eingabe.id = 'regel-suche';
+    eingabe.placeholder = 'Im Regelwerk suchen …';
+    eingabe.autocomplete = 'off';
+    eingabe.spellcheck = false;
+    eingabe.setAttribute('aria-controls', artikel.id);
+    var drucken = knoten('button', 'drucken', 'Drucken / PDF');
+    drucken.type = 'button';
+    drucken.addEventListener('click', function () { window.print(); });
+    var status = knoten('p', 'suche-status');
+    status.setAttribute('role', 'status');
+    status.setAttribute('aria-live', 'polite');
+    zeile.appendChild(etikett);
+    zeile.appendChild(eingabe);
+    zeile.appendChild(drucken);
+    leiste.appendChild(zeile);
+    leiste.appendChild(status);
+
+    var inhalt = ueberschriften.filter(function (ueberschrift) { return ueberschrift.ebene <= 3; });
+    if (inhalt.length >= 3) {
+      var verzeichnis = knoten('details', 'inhalt');
+      verzeichnis.appendChild(knoten('summary', '', 'Inhaltsverzeichnis'));
+      var punkte = knoten('ul', 'inhaltsliste');
+      inhalt.forEach(function (ueberschrift, nummer) {
+        ueberschrift.el.id = 'abschnitt-' + (nummer + 1);
+        var punkt = knoten('li', 'e' + ueberschrift.ebene);
+        var link = knoten('a', '', ueberschrift.el.textContent.trim());
+        link.href = '#' + ueberschrift.el.id;
+        punkt.appendChild(link);
+        punkte.appendChild(punkt);
+      });
+      verzeichnis.appendChild(punkte);
+      leiste.appendChild(verzeichnis);
+    }
+
+    var erstes = null;
+    Array.prototype.slice.call(artikel.children).some(function (el) {
+      if (el.classList.contains('doc-title') || el.classList.contains('doc-meta')) { return false; }
+      erstes = el;
+      return true;
+    });
+    artikel.insertBefore(leiste, erstes);
+
+    function anwenden() {
+      markenEntfernen(artikel);
+      var woerter = falten(eingabe.value).falt.split(/\s+/).filter(Boolean);
+      var treffer = 0;
+      if (!woerter.length) {
+        eintraege.forEach(function (eintrag) { eintrag.el.hidden = false; });
+        listen.forEach(function (liste) { liste.hidden = false; });
+        ueberschriften.forEach(function (ueberschrift) { ueberschrift.el.hidden = false; });
+        status.textContent = '';
+        return;
+      }
+      var passt = function (gefaltet) { return woerter.every(function (wort) { return gefaltet.indexOf(wort) >= 0; }); };
+      eintraege.forEach(function (eintrag) {
+        eintrag.passt = passt(eintrag.falt);
+        eintrag.el.hidden = !eintrag.passt;
+        if (eintrag.passt) { treffer += 1; markieren(eintrag.el, woerter); }
+      });
+      listen.forEach(function (liste) {
+        liste.hidden = Array.prototype.every.call(liste.children, function (kind) { return kind.hidden; });
+      });
+      ueberschriften.forEach(function (ueberschrift) {
+        var selbst = passt(ueberschrift.falt);
+        var imAbschnitt = ueberschrift.eintraege.some(function (eintrag) { return eintrag.passt; });
+        ueberschrift.el.hidden = !(selbst || imAbschnitt);
+        if (selbst) { treffer += 1; markieren(ueberschrift.el, woerter); }
+      });
+      status.textContent = treffer ? treffer + ' Treffer' : 'Keine Treffer';
+    }
+
+    eingabe.addEventListener('input', anwenden);
+    /* Beim Drucken soll immer das ganze Regelwerk erscheinen, nicht nur die Suchtreffer. */
+    window.addEventListener('beforeprint', function () { if (eingabe.value) { eingabe.value = ''; anwenden(); } });
+  }
+
+  /* Macht aus jeder Überschrift 3 eine aufklappbare Frage, der Text darunter ist die Antwort. */
+  function fragenAufklappbar(artikel) {
+    var kinder = Array.prototype.slice.call(artikel.children);
+    for (var i = 0; i < kinder.length; i += 1) {
+      var el = kinder[i];
+      if (el.tagName !== 'H3' || !el.textContent.trim()) { continue; }
+      var eintrag = knoten('details', 'faq-eintrag');
+      var antwort = knoten('div', 'faq-antwort');
+      eintrag.appendChild(knoten('summary', '', el.textContent.trim()));
+      eintrag.appendChild(antwort);
+      var j = i + 1;
+      while (j < kinder.length && !/^H[1-3]$/.test(kinder[j].tagName)) { antwort.appendChild(kinder[j]); j += 1; }
+      artikel.replaceChild(eintrag, el);
+      i = j - 1;
+    }
+  }
+
   /* ---------- Seite laden ---------- */
 
   function seiteLaden(behaelter) {
@@ -414,6 +603,10 @@
       behaelter.textContent = '';
       behaelter.appendChild(dokumentZuKnoten(ergebnis.daten, ergebnis.monat));
       behaelter.removeAttribute('aria-busy');
+      /* Regelwerke bekommen Suche, Inhaltsverzeichnis und Druckknopf. Ein Fehler dort darf den Text nicht stören. */
+      if (/^regeln-/.test(quelle)) {
+        try { werkzeugeBauen(behaelter); } catch (fehler) { /* der Text bleibt ohne Werkzeuge */ }
+      }
     }).catch(function () {
       behaelter.textContent = '';
       behaelter.appendChild(knoten('p', '', 'Das Regelwerk konnte gerade nicht geladen werden. Bitte lade die Seite neu oder versuche es später noch einmal.'));
@@ -472,6 +665,9 @@
 
       behaelter.textContent = '';
       behaelter.appendChild(dokumentZuKnoten({ stand: seite.stand, inhalt: seite.inhalt }, ergebnis.monat));
+      if (seite.aufklappbar === true) {
+        try { fragenAufklappbar(behaelter); } catch (fehler) { /* die Seite bleibt normal */ }
+      }
       behaelter.removeAttribute('aria-busy');
 
       /* Ein Formular unter dem Text (Bewerbung und Ähnliches, siehe formular.js). Ein Fehler dort darf die Seite nicht stören. */

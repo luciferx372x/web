@@ -105,6 +105,11 @@ a:hover { color: var(--red-bright); }
   color: #000; text-decoration: none; letter-spacing: .2px;
 }
 .topbar a:hover, .topbar a:focus-visible { background: #000; color: #fff; }
+/* Server-Status aus der Verwaltung: Farbe der Leiste und zweiter Knopf */
+.topbar[data-status="online"] { background: #22c55e; }
+.topbar[data-status="wartung"] { background: #f59e0b; }
+.topbar a.verbinden { background: #000; color: #fff; }
+.topbar a.verbinden:hover, .topbar a.verbinden:focus-visible { background: #fff; color: #000; }
 
 /* ---------- Kopfzeile ---------- */
 .site-header {
@@ -334,6 +339,38 @@ a:hover { color: var(--red-bright); }
 .formular-erfolg > :first-child { margin-top: 0; }
 .formular-erfolg > :last-child { margin-bottom: 0; }
 
+/* ---------- Regelwerke: Suche, Inhaltsverzeichnis (regeln.js) ---------- */
+.prose h2, .prose h3, .prose h4 { scroll-margin-top: 72px; }
+.werkzeuge { margin: 0 0 18px; }
+.werkzeuge .suche { display: flex; gap: 8px; }
+.werkzeuge input[type="search"] {
+  flex: 1; min-width: 0; padding: 8px 12px;
+  border: 1px solid var(--line); border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.05); color: var(--text);
+  font: inherit; color-scheme: dark;
+}
+.werkzeuge input[type="search"]:focus-visible { outline: 2px solid var(--red-bright); outline-offset: 1px; }
+.werkzeuge .drucken {
+  padding: 8px 14px; white-space: nowrap;
+  border: 1px solid var(--line-red); border-radius: var(--radius-sm);
+  background: transparent; color: var(--red-bright); font: inherit; cursor: pointer;
+}
+.werkzeuge .drucken:hover, .werkzeuge .drucken:focus-visible { background: var(--red); border-color: var(--red); color: #fff; }
+.werkzeuge .suche-status { min-height: 1.4em; margin: 6px 0 0; color: var(--muted); font-size: .84rem; }
+.werkzeuge details.inhalt { margin: 8px 0 0; border: 1px solid var(--line); border-radius: var(--radius-sm); background: rgba(255, 255, 255, 0.03); }
+.werkzeuge details.inhalt > summary { padding: 8px 12px; cursor: pointer; font-size: .92rem; font-weight: 600; }
+.werkzeuge .inhaltsliste { margin: 0; padding: 2px 14px 12px; list-style: none; font-size: .88rem; }
+.werkzeuge .inhaltsliste li { margin: 3px 0; }
+.werkzeuge .inhaltsliste .e3 { padding-left: 1.1em; }
+.prose mark.treffer { padding: 0; border-radius: 2px; background: rgba(250, 48, 25, 0.42); color: #fff; }
+
+/* Aufklappbare Fragen auf eigenen Seiten (Einstellung "Fragen aufklappbar" in der Verwaltung) */
+.faq-eintrag { margin: 0 0 10px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: rgba(255, 255, 255, 0.03); }
+.faq-eintrag > summary { padding: 10px 14px; cursor: pointer; font-weight: 600; }
+.faq-eintrag[open] > summary { border-bottom: 1px solid var(--line); }
+.faq-antwort { padding: 10px 14px 2px; }
+.faq-antwort > :last-child { margin-bottom: 8px; }
+
 /* ---------- Fußzeile ---------- */
 .site-footer { margin-top: 28px; }
 .footer-links {
@@ -365,4 +402,24 @@ a:hover { color: var(--red-bright); }
   .rules > li, .regel { grid-template-columns: 2.6em 1fr; }
   .team { grid-template-columns: 1fr; }
   .site-header .inner { justify-content: center; }
+}
+
+/* ---------- Drucken (Strg+P oder der Knopf "Drucken / PDF") ---------- */
+@media print {
+  body { background: #fff !important; color: #000; font-size: 11pt; }
+  .skip, .topbar, .site-header, .subnav, .back, .werkzeuge, .footer-links, .disclaimer, .formular { display: none !important; }
+  .site-footer { margin: 0; }
+  .hero { min-height: 0; background: none; border: 0; }
+  .hero::before { display: none; }
+  .hero h1 { padding: 0 0 8pt; color: #000; font-size: 18pt; text-shadow: none; }
+  .page { max-width: none; padding: 0; }
+  .panel { padding: 0; border: 0; background: none; box-shadow: none; }
+  a, .prose a { color: #000; text-decoration: none; }
+  .doc-title, .doc-meta, .examples { color: #333; }
+  .prose h2 { border-left-color: #000; break-after: avoid; }
+  .prose h3, .prose h4 { break-after: avoid; }
+  .regel, .prose p, .prose .note { break-inside: avoid; }
+  .num { color: #000; }
+  .prose .note { border-left-color: #000; background: #eee; }
+  .faq-eintrag { border-color: #999; }
 }

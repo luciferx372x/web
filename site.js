@@ -16,6 +16,14 @@
 
   var SEITENZIEL = /^[A-Za-z0-9][A-Za-z0-9._\-]*\.html(\?[A-Za-z0-9=&_.\-]*)?(#[A-Za-z0-9_\-]+)?$/;
 
+  /* Fertige Texte für den Server-Status (Auswahl in der Verwaltung unter Einstellungen). */
+  var SERVER_STATUS = {
+    online: 'Server online',
+    wartung: 'Wartungsarbeiten, wir sind gleich wieder da',
+    offline: 'Server offline',
+    im_aufbau: 'Server im Aufbau'
+  };
+
   /* Zeitpunkt der letzten Änderung jeder geladenen Datei, wie der Server ihn meldet (Last-Modified). */
   var zeiten = {};
 
@@ -98,8 +106,12 @@
     try {
       var adresse = new URL(ziel, location.href);
       if (adresse.origin !== location.origin) { return false; }
-      return normPfad(adresse.pathname) === normPfad(location.pathname) &&
-        (adresse.search === '' || adresse.search === location.search);
+      if (normPfad(adresse.pathname) !== normPfad(location.pathname)) { return false; }
+      /* Alle Parameter des Ziels müssen in der Adresse stehen. Zusätzliche Parameter (zum Beispiel utm_source) stören nicht. */
+      var jetzt = new URLSearchParams(location.search);
+      var passt = true;
+      adresse.searchParams.forEach(function (wert, name) { if (jetzt.get(name) !== wert) { passt = false; } });
+      return passt;
     } catch (fehler) {
       return false;
     }
@@ -127,18 +139,39 @@
     var leiste = document.querySelector('.topbar');
     if (leiste) {
       var absatz = leiste.querySelector('p');
-      var knopf = leiste.querySelector('a');
-      var leistenText = sauber(daten.status_text);
+      var knopf = leiste.querySelector('a:not(.verbinden)');
+      /* Ein fertiger Status aus der Auswahl ersetzt den eigenen Text und färbt die Leiste. */
+      var status = sauber(daten.server_status);
+      var fertigerStatus = Object.prototype.hasOwnProperty.call(SERVER_STATUS, status);
+      var leistenText = fertigerStatus ? SERVER_STATUS[status] : sauber(daten.status_text);
       var knopfText = sauber(daten.status_button_text);
       var knopfLink = sichererLink(daten.status_link);
       var knopfSichtbar = Boolean(knopfText && knopfLink);
+      var verbindenLink = sichererLink(daten.verbinden_link);
+      var verbinden = leiste.querySelector('a.verbinden');
 
+      leiste.setAttribute('data-status', fertigerStatus ? status : 'eigen');
       if (absatz) { absatz.textContent = leistenText; absatz.hidden = !leistenText; }
       if (knopf) {
         knopf.hidden = !knopfSichtbar;
         if (knopfSichtbar) { knopf.textContent = knopfText; knopf.href = knopfLink; }
       }
-      leiste.hidden = !leistenText && !knopfSichtbar;
+      /* Zweiter Knopf "Server beitreten", nur wenn in der Verwaltung ein Link eingetragen ist. */
+      if (verbindenLink) {
+        if (!verbinden) {
+          verbinden = document.createElement('a');
+          verbinden.className = 'verbinden';
+          leiste.appendChild(verbinden);
+        }
+        verbinden.textContent = sauber(daten.verbinden_text) || 'Server beitreten';
+        verbinden.href = verbindenLink;
+        verbinden.target = '_blank';
+        verbinden.rel = 'noopener noreferrer';
+        verbinden.hidden = false;
+      } else if (verbinden) {
+        verbinden.hidden = true;
+      }
+      leiste.hidden = !leistenText && !knopfSichtbar && !verbindenLink;
     }
 
     var links = { tiktok: daten.tiktok_url, discord: daten.discord_url, youtube: daten.youtube_url };

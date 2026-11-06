@@ -18,6 +18,22 @@ collections:
         label: Rote Leiste, Links und Fußzeile
         file: einstellungen.json
         fields:
+          - label: Server-Status
+            name: server_status
+            widget: select
+            default: eigener_text
+            options:
+              - { label: Eigener Text (wie bisher), value: eigener_text }
+              - { label: Server online (grün), value: online }
+              - { label: Wartungsarbeiten (orange), value: wartung }
+              - { label: Server offline (rot), value: offline }
+              - { label: Server im Aufbau (rot), value: im_aufbau }
+            hint: "Bei Online, Wartung, Offline und Im Aufbau steht in der Leiste ein fertiger Text und die Leiste ändert ihre Farbe. Bei „Eigener Text“ gilt der Text darunter. Ändert man den Status und speichert, kann eine Nachricht nach Discord gehen (nur wenn die Discord-Meldung bei GitHub eingerichtet ist, siehe Anleitung)."
+          - label: Zusatztext für Discord
+            name: status_discord_text
+            widget: text
+            required: false
+            hint: "Freiwillig. Steht in der Discord-Nachricht, wenn du den Status oder diesen Text änderst und speicherst, zum Beispiel: Wartung bis 20 Uhr. Leeren löst keine Nachricht aus."
           - label: Text in der roten Leiste
             name: status_text
             widget: string
@@ -34,6 +50,17 @@ collections:
             required: false
             pattern: ['^https://.+', 'Der Link muss mit https:// beginnen.']
             hint: "Muss mit https:// beginnen. Ohne Text und Link verschwindet der Knopf."
+          - label: Text des Beitreten-Knopfs
+            name: verbinden_text
+            widget: string
+            required: false
+            hint: "Zum Beispiel: Server beitreten. Leer lassen für den Standardtext."
+          - label: Link zum Beitreten
+            name: verbinden_link
+            widget: string
+            required: false
+            pattern: ['^(https://.+)?$', 'Der Link muss mit https:// beginnen.']
+            hint: "Zum Beispiel https://cfx.re/join/abc123. Wenn du das Feld leer lässt, gibt es keinen Beitreten-Knopf."
           - label: Discord-Link
             name: discord_url
             widget: string
@@ -242,6 +269,7 @@ collections:
               - { label: Kennung, name: kennung, widget: string, pattern: ['^[a-z0-9][a-z0-9\-]*$', 'Nur kleine Buchstaben, Zahlen und Bindestriche, zum Beispiel neuigkeiten.'], hint: "Kurzer Name für den Link, zum Beispiel neuigkeiten. Die Seite ist dann unter seite.html?s=neuigkeiten erreichbar. Nach dem Veröffentlichen nicht mehr ändern, sonst stimmen alte Links nicht mehr." }
               - { label: Sichtbar, name: sichtbar, widget: boolean, default: false, hint: "Aus = Entwurf, die Seite ist nicht erreichbar. An = die Seite ist öffentlich." }
               - { label: Im Menü anzeigen, name: im_menue, widget: boolean, default: false, hint: "Hängt die Seite ans Ende des Hauptmenüs, aber nur, wenn sie sichtbar ist." }
+              - { label: Fragen aufklappbar anzeigen, name: aufklappbar, widget: boolean, default: false, hint: "Für eine FAQ: Jede Überschrift 3 wird zu einer aufklappbaren Frage, der Text darunter ist die Antwort." }
               - { label: Text im Menü, name: menuetext, widget: string, required: false, hint: "Leer lassen, dann steht im Menü der Titel." }
               - { label: Kurzbeschreibung für Suchmaschinen, name: beschreibung, widget: text, required: false }
               - { label: Stand, name: stand, widget: string, required: false, hint: "Kleine Zeile unter der Überschrift. Schreibe {monat}, dann steht dort automatisch der Monat der letzten Änderung, zum Beispiel: Stand: {monat}. Kann leer bleiben." }
