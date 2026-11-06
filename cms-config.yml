@@ -217,6 +217,76 @@ collections:
           - { label: Überschrift der Social-Media-Karte, name: social_ueberschrift, widget: string, hint: "Unsichtbar, nur für Screenreader." }
           - { label: Beschreibung des Social-Media-Banners, name: social_bild_alt, widget: string, required: false }
 
+  - name: eigene_seiten
+    label: Eigene Seiten
+    description: "Zusätzliche Seiten wie Neuigkeiten, Bewerbung oder FAQ. Jede Seite ist unter seite.html?s=KENNUNG erreichbar."
+    files:
+      - name: seiten
+        label: Alle eigenen Seiten
+        file: seiten.json
+        fields:
+          - label: Adresse des Formular-Relais
+            name: formular_adresse
+            widget: string
+            required: false
+            pattern: ['^(https://[^ ]+)?$', 'Die Adresse muss mit https:// beginnen.']
+            hint: "Erst eintragen, wenn das Relais bei Cloudflare eingerichtet ist (siehe Anleitung). Die Adresse endet meist auf .workers.dev. Ohne Adresse funktioniert kein Formular."
+          - label: Seiten
+            name: seiten
+            label_singular: Seite
+            widget: list
+            summary: "{{fields.titel}}"
+            hint: "Neue Seite: unten auf Hinzufügen klicken. Ist „Sichtbar“ ausgeschaltet, ist die Seite ein Entwurf, den niemand sieht. Mit „Im Menü anzeigen“ hängt sie am Ende des Hauptmenüs."
+            fields:
+              - { label: Titel, name: titel, widget: string, hint: "Große Überschrift der Seite und Titel im Browser-Tab." }
+              - { label: Kennung, name: kennung, widget: string, pattern: ['^[a-z0-9][a-z0-9\-]*$', 'Nur kleine Buchstaben, Zahlen und Bindestriche, zum Beispiel neuigkeiten.'], hint: "Kurzer Name für den Link, zum Beispiel neuigkeiten. Die Seite ist dann unter seite.html?s=neuigkeiten erreichbar. Nach dem Veröffentlichen nicht mehr ändern, sonst stimmen alte Links nicht mehr." }
+              - { label: Sichtbar, name: sichtbar, widget: boolean, default: false, hint: "Aus = Entwurf, die Seite ist nicht erreichbar. An = die Seite ist öffentlich." }
+              - { label: Im Menü anzeigen, name: im_menue, widget: boolean, default: false, hint: "Hängt die Seite ans Ende des Hauptmenüs, aber nur, wenn sie sichtbar ist." }
+              - { label: Text im Menü, name: menuetext, widget: string, required: false, hint: "Leer lassen, dann steht im Menü der Titel." }
+              - { label: Kurzbeschreibung für Suchmaschinen, name: beschreibung, widget: text, required: false }
+              - { label: Stand, name: stand, widget: string, required: false, hint: "Kleine Zeile unter der Überschrift. Schreibe {monat}, dann steht dort automatisch der Monat der letzten Änderung, zum Beispiel: Stand: {monat}. Kann leer bleiben." }
+              - label: Text
+                name: inhalt
+                widget: markdown
+                buttons: [bold, italic, link, heading-two, heading-three, heading-four, bulleted-list, numbered-list, quote]
+                editor_components: [hr]
+                hint: "Zeilenumbruch innerhalb eines Absatzes mit Umschalt+Enter, neuer Absatz mit Enter. Links auf andere Seiten dieser Website schreibst du als Dateiname, zum Beispiel team.html oder seite.html?s=neuigkeiten."
+              - label: Formular unter dem Text
+                name: formular
+                widget: object
+                collapsed: true
+                required: false
+                hint: "Zum Beispiel für eine Bewerbung. Die Antworten kommen als Nachricht in einen Discord-Kanal. Das Formular funktioniert erst, wenn oben die Adresse des Formular-Relais eingetragen ist."
+                fields:
+                  - { label: Formular anzeigen, name: aktiv, widget: boolean, default: false, hint: "Aus = kein Formular auf dieser Seite." }
+                  - { label: Kanal-Kürzel, name: kanal, widget: string, default: bewerbung, pattern: ['^[a-z0-9][a-z0-9\-]{0,29}$', 'Nur kleine Buchstaben, Zahlen und Bindestriche.'], hint: "Bestimmt, in welchen Discord-Kanal die Antworten gehen. Im Formular-Relais muss ein passender Eintrag stehen (bewerbung gehört zu WEBHOOK_BEWERBUNG)." }
+                  - label: Fragen
+                    name: felder
+                    label_singular: Frage
+                    widget: list
+                    summary: "{{fields.frage}}"
+                    hint: "Die Reihenfolge lässt sich per Ziehen ändern."
+                    fields:
+                      - { label: Frage, name: frage, widget: string }
+                      - label: Art der Antwort
+                        name: typ
+                        widget: select
+                        default: kurztext
+                        options:
+                          - { label: Kurzer Text, value: kurztext }
+                          - { label: Langer Text, value: langtext }
+                          - { label: Auswahl aus einer Liste, value: auswahl }
+                          - { label: Zahl, value: zahl }
+                          - { label: Häkchen zum Bestätigen, value: bestaetigung }
+                      - { label: Pflichtfeld, name: pflicht, widget: boolean, default: true }
+                      - { label: Hinweis unter der Frage, name: hinweis, widget: string, required: false }
+                      - { label: Auswahlmöglichkeiten, name: optionen, widget: text, required: false, hint: "Nur bei „Auswahl aus einer Liste“: eine Möglichkeit pro Zeile." }
+                      - { label: Kleinster Wert, name: min, widget: number, value_type: int, required: false, hint: "Nur bei „Zahl“, zum Beispiel 16 für ein Mindestalter." }
+                      - { label: Größter Wert, name: max, widget: number, value_type: int, required: false, hint: "Nur bei „Zahl“." }
+                  - { label: Text der Einwilligung, name: einwilligung, widget: text, required: false, hint: "Steht neben dem Pflicht-Häkchen. Der Link zur Datenschutzerklärung wird automatisch angehängt." }
+                  - { label: Text auf dem Absende-Knopf, name: knopf, widget: string, required: false, default: Absenden }
+                  - { label: Text nach dem Absenden, name: erfolg, widget: text, required: false, hint: "Wird nach dem erfolgreichen Absenden angezeigt." }
+
   - name: rechtstexte
     label: Rechtstexte
     description: "Impressum, Datenschutz und Nutzungsbedingungen. Änderungen hier sind sofort öffentlich, bitte mit Sorgfalt und im Zweifel rechtlich prüfen lassen."

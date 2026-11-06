@@ -300,6 +300,40 @@ a:hover { color: var(--red-bright); }
 .member dt { color: var(--red); font-size: .72rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; }
 .member dd { margin: 3px 0 0; font-size: 1.05rem; font-weight: 600; }
 
+/* ---------- Formulare auf eigenen Seiten (formular.js) ---------- */
+.formular { margin-top: 18px; }
+.formular a { color: var(--red-bright); }
+.formular .feld { margin: 0 0 16px; }
+.formular .frage { display: block; margin: 0 0 4px; font-size: .92rem; font-weight: 600; }
+.formular .pflicht { color: var(--red); font-weight: 700; }
+.formular .hinweis { margin: 0 0 6px; color: var(--muted); font-size: .82rem; }
+.formular input[type="text"], .formular input[type="number"], .formular select, .formular textarea {
+  display: block; width: 100%; padding: 9px 12px;
+  border: 1px solid var(--line); border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.05); color: var(--text);
+  font: inherit; color-scheme: dark;
+}
+.formular textarea { min-height: 120px; resize: vertical; }
+.formular input:focus-visible, .formular select:focus-visible, .formular textarea:focus-visible { outline: 2px solid var(--red-bright); outline-offset: 1px; }
+.formular [aria-invalid="true"] { border-color: var(--red); }
+.formular .haken { display: flex; align-items: flex-start; gap: 10px; font-size: .92rem; cursor: pointer; }
+.formular .haken input { flex: none; width: 18px; height: 18px; margin: 3px 0 0; accent-color: var(--red); }
+.formular .fehler { margin: 5px 0 0; color: #ff8f80; font-size: .84rem; }
+.formular .aktionen { margin-top: 8px; }
+.formular .knopf {
+  padding: 10px 22px;
+  border: 1px solid var(--line-red); border-radius: 10px;
+  background: linear-gradient(135deg, #ff4a36, var(--red-deep));
+  color: #fff; font: inherit; font-weight: 600; cursor: pointer;
+}
+.formular .knopf:hover:not(:disabled), .formular .knopf:focus-visible { box-shadow: 0 8px 20px rgba(250, 48, 25, 0.32); transform: translateY(-1px); }
+.formular .knopf:disabled { opacity: .55; cursor: default; }
+.formular .status { min-height: 1.5em; margin: 12px 0 0; color: var(--muted); font-size: .9rem; }
+.formular .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.formular-erfolg:focus { outline: none; }
+.formular-erfolg > :first-child { margin-top: 0; }
+.formular-erfolg > :last-child { margin-bottom: 0; }
+
 /* ---------- Fußzeile ---------- */
 .site-footer { margin-top: 28px; }
 .footer-links {

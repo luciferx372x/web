@@ -5,6 +5,7 @@
    - seiteninhalte.json   Name der Website, Menü, Regelwerk-Liste, Fußzeile, Disclaimer
    - seitentitel.json     Überschrift, Browsertitel und Beschreibung jeder Seite
    - startseite.json      Texte der Startseite
+   - seiten.json          Eigene Seiten (seite.html?s=...), die im Hauptmenü erscheinen sollen
    Stand-Angaben: Steht {monat} im Text, setzt die Seite den Monat der letzten Änderung ein
    (aus "Stand: {monat}" wird zum Beispiel "Stand: 11.2026"). Den Monat liefert der Server
    mit dem Änderungsdatum der Datei (Last-Modified), niemand muss ihn von Hand pflegen.
@@ -208,7 +209,21 @@
     });
   }
 
-  function seiteninhalteAnwenden(inhalte) {
+  /* Eigene Seiten, die in der Verwaltung als sichtbar und "im Menü anzeigen" eingestellt sind, werden Menüpunkte. */
+  function menuepunkteAusSeiten(seiten) {
+    var liste = seiten && typeof seiten === 'object' && Array.isArray(seiten.seiten) ? seiten.seiten : [];
+    var punkte = [];
+    liste.forEach(function (eintrag) {
+      if (!eintrag || typeof eintrag !== 'object' || eintrag.sichtbar !== true || eintrag.im_menue !== true) { return; }
+      var kennung = sauber(eintrag.kennung);
+      var text = sauber(eintrag.menuetext) || sauber(eintrag.titel);
+      if (!/^[a-z0-9][a-z0-9\-]*$/.test(kennung) || !text) { return; }
+      punkte.push({ text: text, ziel: 'seite.html?s=' + kennung });
+    });
+    return punkte;
+  }
+
+  function seiteninhalteAnwenden(inhalte, seiten) {
     if (!inhalte || typeof inhalte !== 'object') { return; }
 
     var marke = document.querySelector('.brand span');
@@ -218,8 +233,16 @@
     var regelZiele = regelwerke.map(function (eintrag) { return eintrag && eintrag.ziel; });
     var imRegelwerk = regelZiele.some(function (ziel) { return ziel && istAktuell(ziel); });
 
-    /* Hauptmenü: Der Punkt, der auf das erste Regelwerk zeigt, bleibt auf allen Regelwerk-Seiten markiert. */
-    linksErsetzen(document.querySelector('.site-header .nav'), inhalte.navigation, function (eintrag) {
+    /* Hauptmenü: Der Punkt, der auf das erste Regelwerk zeigt, bleibt auf allen Regelwerk-Seiten markiert.
+       Eigene Seiten für das Menü kommen ans Ende (nur wenn dort nicht schon derselbe Link steht). */
+    var navigation = inhalte.navigation;
+    if (Array.isArray(navigation)) {
+      var eigene = menuepunkteAusSeiten(seiten).filter(function (punkt) {
+        return !navigation.some(function (eintrag) { return eintrag && eintrag.ziel === punkt.ziel; });
+      });
+      navigation = navigation.concat(eigene);
+    }
+    linksErsetzen(document.querySelector('.site-header .nav'), navigation, function (eintrag) {
       return istAktuell(eintrag.ziel) || Boolean(imRegelwerk && regelZiele[0] && eintrag.ziel === regelZiele[0]);
     });
 
@@ -306,9 +329,10 @@
     einstellungen,
     ohneFehler(laden('seiteninhalte.json')),
     ohneFehler(laden('seitentitel.json')),
-    ohneFehler(laden('startseite.json'))
+    ohneFehler(laden('startseite.json')),
+    ohneFehler(laden('seiten.json'))
   ]).then(function (ergebnis) {
-    sicher(function () { seiteninhalteAnwenden(ergebnis[1]); });
+    sicher(function () { seiteninhalteAnwenden(ergebnis[1], ergebnis[4]); });
     sicher(function () { seitentitelAnwenden(ergebnis[2]); });
     sicher(function () { startseiteAnwenden(ergebnis[3], ergebnis[1]); });
     sicher(function () { standAnwenden(ergebnis[0]); });

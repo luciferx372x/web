@@ -1,0 +1,48 @@
+{
+  "formular_adresse": "",
+  "seiten": [
+    {
+      "titel": "Bewerbung",
+      "kennung": "bewerbung",
+      "sichtbar": false,
+      "im_menue": true,
+      "menuetext": "Bewerbung",
+      "beschreibung": "Bewirb dich bei Frankfurt RP.",
+      "stand": "Stand: {monat}",
+      "inhalt": "## So läuft die Bewerbung\n\n1. Lies zuerst das [Regelwerk](regelwerk.html).\n2. Tritt unserem [Discord](https://discord.gg/vYrSJ22vrX) bei.\n3. Fülle das Formular unten aus.\n4. Das Team meldet sich bei dir auf Discord.\n\n## Voraussetzungen\n\n- Du bist mindestens 16 Jahre alt.\n- Du hast ein Mikrofon und spielst GTA V auf dem PC.\n- Du hältst dich an die Regeln.",
+      "formular": {
+        "aktiv": true,
+        "kanal": "bewerbung",
+        "felder": [
+          { "frage": "Discord-Name", "typ": "kurztext", "pflicht": true, "hinweis": "Damit wir dich auf Discord finden." },
+          { "frage": "Wie alt bist du?", "typ": "zahl", "pflicht": true, "hinweis": "Mindestalter: 16 Jahre.", "min": 16, "max": 99 },
+          { "frage": "Wie viel Roleplay-Erfahrung hast du?", "typ": "langtext", "pflicht": true, "hinweis": "Zum Beispiel auf welchen Servern du schon gespielt hast und wie lange." },
+          { "frage": "Welchen Charakter möchtest du spielen?", "typ": "langtext", "pflicht": true, "hinweis": "Name, Hintergrund und was ihn ausmacht." },
+          { "frage": "Wie hast du von uns erfahren?", "typ": "auswahl", "pflicht": false, "optionen": "Discord\nTikTok\nFreunde\nSuchmaschine\nSonstiges" },
+          { "frage": "Ich habe das Regelwerk gelesen und verstanden.", "typ": "bestaetigung", "pflicht": true }
+        ],
+        "einwilligung": "Ich bin damit einverstanden, dass meine Angaben aus diesem Formular über Discord an das Team von Frankfurt RP übermittelt und dort zur Bearbeitung meiner Bewerbung verwendet werden.",
+        "knopf": "Bewerbung absenden",
+        "erfolg": "**Danke für deine Bewerbung!** Wir melden uns so bald wie möglich bei dir auf Discord."
+      }
+    },
+    {
+      "titel": "Neuigkeiten",
+      "kennung": "neuigkeiten",
+      "sichtbar": false,
+      "im_menue": true,
+      "menuetext": "Neuigkeiten",
+      "beschreibung": "Neuigkeiten, Änderungen und Termine bei Frankfurt RP.",
+      "stand": "Stand: {monat}",
+      "inhalt": "## Neuigkeiten\n\nHier informieren wir über Neuigkeiten, Änderungen an den Regelwerken und Termine bei Frankfurt RP.",
+      "formular": {
+        "aktiv": false,
+        "kanal": "bewerbung",
+        "felder": [],
+        "einwilligung": "",
+        "knopf": "Absenden",
+        "erfolg": ""
+      }
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-/* Frankfurt RP – zeigt die Regelwerke aus den Datendateien (regeln-*.json) an.
+/* Frankfurt RP – zeigt die Regelwerke (regeln-*.json), Rechtstexte (recht-*.json) und eigenen Seiten (seiten.json) an.
    Die Texte werden in der Verwaltung (/admin) bearbeitet und als Markdown gespeichert.
    Dieses Skript wandelt das Markdown sicher in Seiteninhalt um:
    - Es entstehen nur bekannte Elemente (Überschriften, Absätze, Listen, Hinweiskästen, fett, kursiv, Links).
@@ -421,7 +421,78 @@
     });
   }
 
+  /* ---------- Eigene Seiten: seite.html?s=kennung, Inhalt aus seiten.json ---------- */
+
+  var KENNUNG = /^[a-z0-9][a-z0-9\-]*$/;
+
+  function meldungZeigen(behaelter, text) {
+    behaelter.textContent = '';
+    behaelter.appendChild(knoten('p', '', text));
+    behaelter.removeAttribute('aria-busy');
+  }
+
+  function eigeneSeiteLaden(behaelter) {
+    var quelle = behaelter.getAttribute('data-seiten-quelle');
+    if (!quelle) { return; }
+
+    var kennung = '';
+    try { kennung = String(new URLSearchParams(location.search).get('s') || '').trim(); } catch (fehler) { kennung = ''; }
+    if (!KENNUNG.test(kennung)) {
+      meldungZeigen(behaelter, 'Diese Seite gibt es nicht. Bitte wähle eine Seite im Menü aus.');
+      return;
+    }
+
+    fetch(quelle, { cache: 'no-cache' }).then(function (antwort) {
+      if (!antwort.ok) { throw new Error(quelle + ': ' + antwort.status); }
+      var monat = monatAusAntwort(antwort);
+      return antwort.json().then(function (daten) { return { daten: daten, monat: monat }; });
+    }).then(function (ergebnis) {
+      var liste = ergebnis.daten && Array.isArray(ergebnis.daten.seiten) ? ergebnis.daten.seiten : [];
+      var seite = null;
+      liste.forEach(function (eintrag) {
+        if (seite || !eintrag || typeof eintrag !== 'object') { return; }
+        if (typeof eintrag.kennung === 'string' && eintrag.kennung.trim() === kennung && eintrag.sichtbar === true) { seite = eintrag; }
+      });
+      if (!seite) {
+        meldungZeigen(behaelter, 'Diese Seite gibt es nicht (mehr). Bitte wähle eine Seite im Menü aus.');
+        return;
+      }
+
+      var titel = typeof seite.titel === 'string' ? seite.titel.trim() : '';
+      if (titel) {
+        var marke = document.querySelector('.brand span');
+        var markenname = marke && marke.textContent.trim() ? marke.textContent.trim() : 'Frankfurt RP';
+        document.title = titel + ' – ' + markenname;
+        var ueberschrift = document.querySelector('.hero h1');
+        if (ueberschrift) { ueberschrift.textContent = titel; }
+      }
+      var beschreibung = typeof seite.beschreibung === 'string' ? seite.beschreibung.trim() : '';
+      var metaBeschreibung = document.querySelector('meta[name="description"]');
+      if (metaBeschreibung && beschreibung) { metaBeschreibung.setAttribute('content', beschreibung); }
+
+      behaelter.textContent = '';
+      behaelter.appendChild(dokumentZuKnoten({ stand: seite.stand, inhalt: seite.inhalt }, ergebnis.monat));
+      behaelter.removeAttribute('aria-busy');
+
+      /* Ein Formular unter dem Text (Bewerbung und Ähnliches, siehe formular.js). Ein Fehler dort darf die Seite nicht stören. */
+      try {
+        if (window.frankfurtFormular && seite.formular) {
+          var formularKnoten = window.frankfurtFormular.erzeugen({
+            formular: seite.formular,
+            adresse: ergebnis.daten && typeof ergebnis.daten.formular_adresse === 'string' ? ergebnis.daten.formular_adresse : '',
+            titel: titel || kennung,
+            kennung: kennung
+          });
+          if (formularKnoten && behaelter.parentNode) { behaelter.parentNode.insertBefore(formularKnoten, behaelter.nextSibling); }
+        }
+      } catch (fehler) { /* die Seite bleibt ohne Formular */ }
+    }).catch(function () {
+      meldungZeigen(behaelter, 'Die Seite konnte gerade nicht geladen werden. Bitte lade die Seite neu oder versuche es später noch einmal.');
+    });
+  }
+
   window.frankfurtRegeln = { markdownZuKnoten: markdownZuKnoten, dokumentZuKnoten: dokumentZuKnoten };
 
   Array.prototype.forEach.call(document.querySelectorAll('[data-quelle]'), seiteLaden);
+  Array.prototype.forEach.call(document.querySelectorAll('[data-seiten-quelle]'), eigeneSeiteLaden);
 })();
