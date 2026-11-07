@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Zusätzlicher Schutz: Diese Seite darf nur Dateien von frankfurt-rp.xyz und die Werte vom eigenen Statusdienst (Cloudflare, workers.dev unseres Kontos) laden und keine fremden Skripte ausführen. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://*.fwagner372.workers.dev; base-uri 'self'; form-action 'none'">
+  <title>Server-Status – Frankfurt RP</title>
+  <meta name="description" content="Ist der Frankfurt-RP-Server gerade online? Hier siehst du Status, Spielerzahl, nächsten Neustart und den Verbindungsbefehl.">
+  <meta name="theme-color" content="#ff0000">
+  <link rel="canonical" href="https://frankfurt-rp.xyz/server-status.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Frankfurt RP">
+  <meta property="og:locale" content="de_DE">
+  <meta property="og:title" content="Server-Status – Frankfurt RP">
+  <meta property="og:description" content="Ist der Frankfurt-RP-Server gerade online? Status, Spielerzahl und Verbindungsbefehl auf einen Blick.">
+  <meta property="og:image" content="https://frankfurt-rp.xyz/bild-ffrp-banner-1024.jpg">
+  <meta property="og:url" content="https://frankfurt-rp.xyz/server-status.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/png" sizes="32x32" href="bild-favicon-32.png">
+  <link rel="apple-touch-icon" href="bild-apple-touch-icon.png">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Server-Status: eine Karte mit Status, Spielern, Neustart, Laufzeit und Verbindungsbefehl. Farben kommen von style.css. */
+    .status-einleitung { margin: 0 0 14px; color: var(--muted); }
+    .status-einleitung:empty { display: none; }
+    .status-meldung { min-height: 1.5em; margin: 0; font-weight: 600; }
+    .status-meldung:empty { display: none; }
+    .status-karte { padding: 18px 18px 16px; border: 1px solid var(--line-red); border-radius: var(--radius); background: rgba(10, 10, 14, 0.7); transition: opacity .3s; }
+    .status-karte[hidden], .status-verbinden[hidden], .status-knopf[hidden], .status-weitere[hidden] { display: none !important; }
+    .status-karte.status-dunkel .status-liste, .status-karte.status-dunkel .status-beschreibung { opacity: .5; }
+    .status-kopf { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; margin: 0 0 6px; }
+    .status-name { margin: 0; font-size: 1.3rem; line-height: 1.25; }
+    .status-pille { display: inline-flex; align-items: center; gap: 9px; padding: 6px 14px 6px 11px; border: 1px solid var(--line); border-radius: 999px; background: rgba(255, 255, 255, 0.05); font-size: .95rem; font-weight: 600; }
+    .status-punkt { width: 11px; height: 11px; border-radius: 50%; background: #8a8a94; }
+    .status-pille[data-zustand="online"] .status-punkt { background: #3ddc84; animation: status-puls 2.4s ease-in-out infinite; }
+    .status-pille[data-zustand="offline"] .status-punkt { background: var(--red); }
+    .status-pille[data-zustand="eingeschraenkt"] .status-punkt { background: #ffb020; }
+    @keyframes status-puls {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(61, 220, 132, 0.55); }
+      50% { box-shadow: 0 0 0 7px rgba(61, 220, 132, 0); }
+    }
+    .status-beschreibung { margin: 0 0 14px; color: var(--muted); }
+    .status-beschreibung:empty { display: none; }
+    .status-liste { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 0 0 16px; }
+    .status-weitere { margin-top: -6px; }
+    .status-feld { min-width: 0; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: rgba(255, 255, 255, 0.04); }
+    .status-feld dt { margin: 0 0 4px; color: var(--muted); font-size: .74rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+    .status-feld dd { margin: 0; font-size: 1.15rem; font-weight: 600; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+    .status-balken { display: block; height: 6px; margin-top: 9px; border-radius: 999px; background: rgba(255, 255, 255, 0.1); overflow: hidden; }
+    .status-fuellung { display: block; width: 0; height: 100%; background: var(--red); transition: width .4s; }
+    .status-verbinden { margin: 0 0 12px; }
+    .status-label { margin: 0 0 6px; color: var(--muted); font-size: .8rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
+    .status-befehlzeile { display: flex; flex-wrap: wrap; gap: 8px; align-items: stretch; }
+    .status-befehl { flex: 1 1 260px; min-width: 0; margin: 0; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: #0d0d12; font: 600 .95rem/1.4 ui-monospace, "Cascadia Mono", Consolas, monospace; overflow-wrap: anywhere; user-select: all; }
+    .status-knopf { display: inline-block; font-family: inherit; cursor: pointer; white-space: nowrap; }
+    .status-rueckmeldung { min-height: 1.4em; margin: 6px 0 0; font-size: .85rem; color: var(--muted); }
+    .status-fuss { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 14px; margin: 4px 0 0; color: var(--muted); font-size: .85rem; }
+    .status-fuss p { margin: 0; }
+    .status-nur-vorlesen { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+    @media (max-width: 640px) { .status-liste { grid-template-columns: 1fr; } .status-karte { padding: 14px 14px 12px; } }
+    @media (prefers-reduced-motion: reduce) { .status-pille[data-zustand="online"] .status-punkt { animation: none; } .status-fuellung, .status-karte { transition: none; } }
+  </style>
+  <script src="site.js" defer></script>
+  <script src="server-status.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Zum Hauptinhalt springen</a>
+
+  <div class="topbar">
+    <p>Server im Aufbau</p>
+    <a href="https://discord.gg/vYrSJ22vrX" target="_blank" rel="noopener noreferrer">in arbeit</a>
+  </div>
+
+  <header class="site-header">
+    <div class="inner">
+      <a class="brand" href="index.html">
+        <img src="bild-logo-128.png" width="48" height="48" alt="">
+        <span>Frankfurt RP</span>
+      </a>
+      <nav class="nav" aria-label="Hauptnavigation">
+        <a href="index.html">Startseite</a>
+        <a href="regelwerk.html">Regelwerk</a>
+        <a href="team.html">Team</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="hero"><h1 id="status-titel">Server-Status</h1></div>
+
+    <div class="page">
+      <a class="back" href="index.html">← Zurück zur Startseite</a>
+
+      <section class="panel" aria-labelledby="status-titel">
+        <p id="status-text" class="status-einleitung"></p>
+        <p id="status-meldung" class="status-meldung" role="status" aria-live="polite"></p>
+
+        <div id="status-karte" class="status-karte" hidden>
+          <div class="status-kopf">
+            <h2 id="status-name" class="status-name">Frankfurt RP</h2>
+            <span id="status-pille" class="status-pille" data-zustand="laden"><span class="status-punkt" aria-hidden="true"></span><span id="status-pille-text">Wird geladen …</span></span>
+          </div>
+          <p id="status-beschreibung" class="status-beschreibung"></p>
+
+          <dl class="status-liste">
+            <div class="status-feld"><dt>Spieler</dt><dd><span id="status-spieler">–</span><span class="status-balken" aria-hidden="true"><span id="status-fuellung" class="status-fuellung"></span></span></dd></div>
+            <div class="status-feld"><dt>Nächster Neustart</dt><dd id="status-neustart">–</dd></div>
+            <div class="status-feld"><dt>Laufzeit</dt><dd id="status-laufzeit">–</dd></div>
+          </dl>
+          <dl id="status-weitere" class="status-liste status-weitere" hidden></dl>
+
+          <div id="status-verbinden" class="status-verbinden" hidden>
+            <p id="status-befehl-label" class="status-label">Verbinden: im Spiel F8 drücken und diesen Befehl einfügen</p>
+            <div class="status-befehlzeile">
+              <code id="status-befehl" class="status-befehl" aria-labelledby="status-befehl-label"></code>
+              <button type="button" id="status-kopieren" class="btn status-knopf">Befehl kopieren</button>
+              <a id="status-link" class="btn status-knopf" target="_blank" rel="noopener noreferrer" hidden>Jetzt verbinden</a>
+            </div>
+            <p id="status-rueckmeldung" class="status-rueckmeldung" role="status" aria-live="polite"></p>
+          </div>
+
+          <div class="status-fuss">
+            <p id="status-fuss"></p>
+            <button type="button" id="status-aktualisieren" class="btn status-knopf">Jetzt aktualisieren</button>
+          </div>
+          <p id="status-vorlesen" class="status-nur-vorlesen" role="status" aria-live="polite"></p>
+        </div>
+        <noscript><p>Für den Server-Status wird JavaScript gebraucht.</p></noscript>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <nav class="footer-links" aria-label="Weitere Seiten">
+      <a href="team.html">Team</a>
+      <a href="nutzungsbedingungen.html">Nutzungsbedingungen</a>
+      <a href="datenschutz.html">Datenschutzrichtlinie</a>
+      <a href="impressum.html">Impressum</a>
+    </nav>
+    <div class="disclaimer">
+      <div class="inner">
+        <p class="stand"></p>
+        <p><strong>Disclaimer – Wichtiger Hinweis zum Projekt</strong></p>
+        <p>Alle Inhalte, Personen und Dokumente auf frankfurt-rp.xyz sind frei erfunden und dienen ausschließlich dem Rollenspiel innerhalb des Projekts Frankfurt RP. Es besteht keine reale Rechtsgültigkeit sowie keinerlei Verbindung zu realen Behörden, Gerichten oder staatlichen Institutionen. GTA V ist ein eingetragenes Markenzeichen von Rockstar Games / Take-Two Interactive.</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
