@@ -2,5 +2,5 @@
   "an": true,
   "titel": "Server-Status",
   "einleitung": "Hier siehst du, ob unser Spielserver gerade erreichbar ist, wie viele Spieler online sind und wann der nächste Neustart ansteht. Die Anzeige erneuert sich automatisch jede Minute.",
-  "adresse": ""
+  "adresse": "https://frankfurt-rp-status.fwagner372.workers.dev"
 }
