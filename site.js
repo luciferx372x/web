@@ -446,7 +446,7 @@
 
   /* ---------- overlays.json: Schnee, Feuerwerk und mehr nach Zeitplan, mit Schalter "Edition | Original" ---------- */
 
-  var OVERLAY_EFFEKTE = ['schnee', 'weihnachten', 'sterne', 'konfetti', 'feuerwerk', 'laub', 'halloween', 'herzen', 'ostern'];
+  var OVERLAY_EFFEKTE = ['schnee', 'weihnachten', 'sterne', 'konfetti', 'feuerwerk', 'laub', 'halloween', 'herzen', 'ostern', 'nikolaus', 'jubilaeum'];
   var OVERLAY_STAERKEN = ['wenig', 'normal', 'viel'];
   var DATUMSANGABE = /^(\d{1,2})\.(\d{1,2})\.(\d{4})?$/;
   var TAGE_IM_MONAT = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -461,7 +461,9 @@
     laub: ['🍂', 'Herbst-Edition'],
     halloween: ['🎃', 'Halloween-Edition'],
     herzen: ['❤️', 'Valentins-Edition'],
-    ostern: ['🐣', 'Oster-Edition']
+    ostern: ['🐣', 'Oster-Edition'],
+    nikolaus: ['🎅', 'Nikolaus-Edition'],
+    jubilaeum: ['🎈', 'Jubiläums-Edition']
   };
   var EDITION_SPEICHER = 'ffrp-edition';
   var EDITION_TAGE = 90;

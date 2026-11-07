@@ -1,0 +1,200 @@
+{
+  "an": false,
+  "vorschau_erlaubt": false,
+  "titel": "Adventskalender",
+  "einleitung": "Vom 1. bis zum 24. Dezember öffnet sich jeden Tag ein neues Türchen. Schau jeden Tag vorbei!",
+  "tuerchen": [
+    {
+      "tag": 1,
+      "titel": "Türchen 1",
+      "text": "Hier steht bald eine Überraschung.",
+      "bild": "",
+      "link": "",
+      "link_text": ""
+    },
+    {
+      "tag": 2,
+      "titel": "Türchen 2",
+      "text": "Hier steht bald eine Überraschung.",
+      "bild": "",
+      "link": "",
+      "link_text": ""
+    },
+    {
+      "tag": 3,
+      "titel": "Türchen 3",
+      "text": "Hier steht bald eine Überraschung.",
+      "bild": "",
+      "link": "",
+      "link_text": ""
+    },
+    {
+      "tag": 4,
+      "titel": "Türchen 4",
+      "text": "Hier steht bald eine Überraschung.",
+      "bild": "",
+      "link": "",
+      "link_text": ""
+    },
+    {
+      "tag": 5,
+      "titel": "Türchen 5",
+      "text": "Hier steht bald eine Überraschung.",
+      "bild": "",
+      "link": "",
+      "link_text": ""
+    },
+    {
+      "tag": 6,
+      "titel": "Türchen 6",
+      "text": "Hier steht bald eine Überraschung.",
+      "bild": "",
+      "link": "",
+      "link_text": ""
+    },
+    {
+      "tag": 7,
+      "titel": "Türchen 7",
+      "text": "Hier steht bald eine Überraschung.",
+      "bild": "",
+      "link": "",
+      "link_text": ""
+    },
+    {
+      "tag": 8,
+      "titel": "Türchen 8",
+      "text": "Hier steht bald eine Überraschung.",
+      "bild": "",
+      "link": "",
+      "link_text": ""
+    },
+    {
+      "tag": 9,
+      "titel": "Türchen 9",
+      "text": "Hier steht bald eine Überraschung.",
+      "bild": "",
+      "link": "",
+      "link_text": ""
+    },
+    {
+      "tag": 10,
+      "titel": "Türchen 10",
+      "text": "Hier steht bald eine Überraschung.",
+      "bild": "",
+      "link": "",
+      "link_text": ""
+    },
+    {
+      "tag": 11,
+      "titel": "Türchen 11",
+      "text": "Hier steht bald eine Überraschung.",
+      "bild": "",
+      "link": "",
+      "link_text": ""
+    },
+    {
+      "tag": 12,
+      "titel": "Türchen 12",
+      "text": "Hier steht bald eine Überraschung.",
+      "bild": "",
+      "link": "",
+      "link_text": ""
+    },
+    {
+      "tag": 13,
+      "titel": "Türchen 13",
+      "text": "Hier steht bald eine Überraschung.",
+      "bild": "",
+      "link": "",
+      "link_text": ""
+    },
+    {
+      "tag": 14,
+      "titel": "Türchen 14",
+      "text": "Hier steht bald eine Überraschung.",
+      "bild": "",
+      "link": "",
+      "link_text": ""
+    },
+    {
+      "tag": 15,
+      "titel": "Türchen 15",
+      "text": "Hier steht bald eine Überraschung.",
+      "bild": "",
+      "link": "",
+      "link_text": ""
+    },
+    {
+      "tag": 16,
+      "titel": "Türchen 16",
+      "text": "Hier steht bald eine Überraschung.",
+      "bild": "",
+      "link": "",
+      "link_text": ""
+    },
+    {
+      "tag": 17,
+      "titel": "Türchen 17",
+      "text": "Hier steht bald eine Überraschung.",
+      "bild": "",
+      "link": "",
+      "link_text": ""
+    },
+    {
+      "tag": 18,
+      "titel": "Türchen 18",
+      "text": "Hier steht bald eine Überraschung.",
+      "bild": "",
+      "link": "",
+      "link_text": ""
+    },
+    {
+      "tag": 19,
+      "titel": "Türchen 19",
+      "text": "Hier steht bald eine Überraschung.",
+      "bild": "",
+      "link": "",
+      "link_text": ""
+    },
+    {
+      "tag": 20,
+      "titel": "Türchen 20",
+      "text": "Hier steht bald eine Überraschung.",
+      "bild": "",
+      "link": "",
+      "link_text": ""
+    },
+    {
+      "tag": 21,
+      "titel": "Türchen 21",
+      "text": "Hier steht bald eine Überraschung.",
+      "bild": "",
+      "link": "",
+      "link_text": ""
+    },
+    {
+      "tag": 22,
+      "titel": "Türchen 22",
+      "text": "Hier steht bald eine Überraschung.",
+      "bild": "",
+      "link": "",
+      "link_text": ""
+    },
+    {
+      "tag": 23,
+      "titel": "Türchen 23",
+      "text": "Hier steht bald eine Überraschung.",
+      "bild": "",
+      "link": "",
+      "link_text": ""
+    },
+    {
+      "tag": 24,
+      "titel": "Türchen 24",
+      "text": "Hier steht bald eine Überraschung.",
+      "bild": "",
+      "link": "",
+      "link_text": ""
+    }
+  ]
+}

@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Zusätzlicher Schutz: Diese Seite darf nur Dateien von frankfurt-rp.xyz laden und keine fremden Skripte ausführen. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'none'">
+  <title>Adventskalender – Frankfurt RP</title>
+  <meta name="description" content="Der Adventskalender von Frankfurt RP: Vom 1. bis zum 24. Dezember öffnet sich jeden Tag ein neues Türchen.">
+  <meta name="theme-color" content="#ff0000">
+  <link rel="canonical" href="https://frankfurt-rp.xyz/adventskalender.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Frankfurt RP">
+  <meta property="og:locale" content="de_DE">
+  <meta property="og:title" content="Adventskalender – Frankfurt RP">
+  <meta property="og:description" content="Vom 1. bis zum 24. Dezember öffnet sich jeden Tag ein neues Türchen.">
+  <meta property="og:image" content="https://frankfurt-rp.xyz/bild-ffrp-banner-1024.jpg">
+  <meta property="og:url" content="https://frankfurt-rp.xyz/adventskalender.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/png" sizes="32x32" href="bild-favicon-32.png">
+  <link rel="apple-touch-icon" href="bild-apple-touch-icon.png">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Adventskalender: Türchen als Knöpfe, Inhalt im Fenster. Farben kommen von style.css. */
+    .kalender-einleitung { margin: 0 0 10px; color: var(--muted); }
+    .kalender-einleitung:empty { display: none; }
+    .kalender-status { min-height: 1.5em; margin: 0 0 16px; font-weight: 600; }
+    .kalender { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin: 0; padding: 0; list-style: none; }
+    .tuer {
+      --a: #d6342a; --b: #8e1b14;
+      position: relative; display: grid; place-items: center;
+      width: 100%; aspect-ratio: 1 / 1; padding: 0;
+      border: 1px solid rgba(255, 255, 255, 0.16); border-radius: 12px;
+      background: linear-gradient(150deg, var(--a), var(--b));
+      color: #fff; font: inherit; cursor: pointer;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+      transition: transform .18s, box-shadow .18s, filter .18s;
+    }
+    .tuer[data-farbe="1"] { --a: #2f9e44; --b: #17642a; }
+    .tuer[data-farbe="2"] { --a: #e0a40a; --b: #9a6a00; }
+    .tuer::before { content: ""; position: absolute; inset: 7px; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 8px; pointer-events: none; }
+    .tuer .nr { position: relative; font-size: clamp(1.35rem, 4.4vw, 2rem); font-weight: 700; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.55); }
+    .tuer:hover, .tuer:focus-visible { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.22); }
+    .tuer.zu { filter: saturate(.5) brightness(.62); }
+    .tuer.zu:hover, .tuer.zu:focus-visible { transform: none; }
+    .tuer.offen { background: radial-gradient(circle at 50% 38%, rgba(255, 226, 140, 0.62), rgba(255, 226, 140, 0) 68%), linear-gradient(150deg, var(--a), var(--b)); }
+    .tuer.offen::after { content: "\2605"; position: absolute; right: 9px; bottom: 6px; font-size: .85rem; color: #ffe08a; text-shadow: 0 0 6px rgba(255, 200, 80, 0.8); }
+    .tuer.heute { outline: 2px solid #ffd43b; outline-offset: 2px; animation: tuer-puls 2.2s ease-in-out infinite; }
+    @keyframes tuer-puls {
+      0%, 100% { box-shadow: 0 8px 18px rgba(0, 0, 0, 0.42), 0 0 0 0 rgba(255, 212, 59, 0.5); }
+      50% { box-shadow: 0 8px 18px rgba(0, 0, 0, 0.42), 0 0 0 9px rgba(255, 212, 59, 0); }
+    }
+    .tuer.wackeln { animation: tuer-wackeln .45s; }
+    @keyframes tuer-wackeln {
+      20% { transform: translateX(-5px) rotate(-2deg); }
+      40% { transform: translateX(5px) rotate(2deg); }
+      60% { transform: translateX(-3px); }
+      80% { transform: translateX(3px); }
+    }
+    @media (max-width: 760px) { .kalender { grid-template-columns: repeat(4, 1fr); gap: 10px; } }
+    @media (max-width: 480px) { .kalender { grid-template-columns: repeat(3, 1fr); gap: 8px; } }
+    @media (prefers-reduced-motion: reduce) { .tuer, .tuer.heute, .tuer.wackeln { animation: none; transition: none; } }
+
+    .kalender-fenster { position: fixed; inset: 0; z-index: 120; display: grid; place-items: center; padding: 16px; background: rgba(0, 0, 0, 0.74); }
+    .kalender-karte { position: relative; width: min(520px, 100%); max-height: calc(100vh - 32px); overflow: auto; padding: 22px 22px 20px; background: #14141a; border: 1px solid var(--line-red); border-radius: var(--radius); box-shadow: var(--shadow); }
+    .kalender-tag { margin: 0 0 4px; color: var(--red-bright); font-size: .82rem; font-weight: 600; letter-spacing: .04em; }
+    .kalender-karte h2 { margin: 0 0 12px; padding-right: 36px; font-size: 1.25rem; line-height: 1.3; }
+    .kalender-karte img { width: 100%; max-height: 280px; object-fit: cover; margin: 0 0 14px; border-radius: 10px; }
+    .kalender-text p { margin: 0 0 10px; white-space: pre-line; }
+    .kalender-link { margin-top: 6px; }
+    .kalender-schliessen { position: absolute; right: 10px; top: 10px; width: 34px; height: 34px; border: 1px solid var(--line); border-radius: 50%; background: rgba(255, 255, 255, 0.06); color: var(--text); font-size: 1.1rem; line-height: 1; cursor: pointer; }
+    .kalender-schliessen:hover, .kalender-schliessen:focus-visible { background: var(--red); border-color: var(--red); }
+    body.kalender-offen { overflow: hidden; }
+    @media print { .kalender-fenster { display: none !important; } }
+  </style>
+  <script src="site.js" defer></script>
+  <script src="adventskalender.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Zum Hauptinhalt springen</a>
+
+  <div class="topbar">
+    <p>Server im Aufbau</p>
+    <a href="https://discord.gg/vYrSJ22vrX" target="_blank" rel="noopener noreferrer">in arbeit</a>
+  </div>
+
+  <header class="site-header">
+    <div class="inner">
+      <a class="brand" href="index.html">
+        <img src="bild-logo-128.png" width="48" height="48" alt="">
+        <span>Frankfurt RP</span>
+      </a>
+      <nav class="nav" aria-label="Hauptnavigation">
+        <a href="index.html">Startseite</a>
+        <a href="regelwerk.html">Regelwerk</a>
+        <a href="team.html">Team</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="hero"><h1 id="kalender-titel">Adventskalender</h1></div>
+
+    <div class="page">
+      <a class="back" href="index.html">← Zurück zur Startseite</a>
+
+      <section class="panel" aria-labelledby="kalender-titel">
+        <p id="kalender-text" class="kalender-einleitung"></p>
+        <p id="kalender-status" class="kalender-status" role="status" aria-live="polite"></p>
+        <ol id="kalender" class="kalender" aria-label="Türchen 1 bis 24"></ol>
+        <noscript><p>Für den Adventskalender wird JavaScript gebraucht.</p></noscript>
+      </section>
+    </div>
+  </main>
+
+  <div id="kalender-fenster" class="kalender-fenster" hidden>
+    <div class="kalender-karte" role="dialog" aria-modal="true" aria-labelledby="kalender-fenster-titel">
+      <button type="button" class="kalender-schliessen" aria-label="Fenster schließen">✕</button>
+      <p class="kalender-tag"></p>
+      <h2 id="kalender-fenster-titel"></h2>
+      <img class="kalender-bild" alt="" hidden>
+      <div class="kalender-text"></div>
+      <a class="btn kalender-link" target="_blank" rel="noopener noreferrer" hidden></a>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <nav class="footer-links" aria-label="Weitere Seiten">
+      <a href="team.html">Team</a>
+      <a href="nutzungsbedingungen.html">Nutzungsbedingungen</a>
+      <a href="datenschutz.html">Datenschutzrichtlinie</a>
+      <a href="impressum.html">Impressum</a>
+    </nav>
+    <div class="disclaimer">
+      <div class="inner">
+        <p class="stand"></p>
+        <p><strong>Disclaimer – Wichtiger Hinweis zum Projekt</strong></p>
+        <p>Alle Inhalte, Personen und Dokumente auf frankfurt-rp.xyz sind frei erfunden und dienen ausschließlich dem Rollenspiel innerhalb des Projekts Frankfurt RP. Es besteht keine reale Rechtsgültigkeit sowie keinerlei Verbindung zu realen Behörden, Gerichten oder staatlichen Institutionen. GTA V ist ein eingetragenes Markenzeichen von Rockstar Games / Take-Two Interactive.</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

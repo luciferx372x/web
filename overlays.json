@@ -3,6 +3,24 @@
   "schalter": true,
   "eintraege": [
     {
+      "name": "Server-Start oder Jubiläum (Datum eintragen, dann einschalten)",
+      "effekt": "jubilaeum",
+      "bezeichnung": "",
+      "von": "",
+      "bis": "",
+      "staerke": "normal",
+      "aktiv": false
+    },
+    {
+      "name": "Nikolaus",
+      "effekt": "nikolaus",
+      "bezeichnung": "",
+      "von": "06.12.",
+      "bis": "06.12.",
+      "staerke": "normal",
+      "aktiv": true
+    },
+    {
       "name": "Weihnachten",
       "effekt": "weihnachten",
       "bezeichnung": "",
