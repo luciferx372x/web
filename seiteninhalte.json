@@ -12,6 +12,10 @@
     {
       "text": "Team",
       "ziel": "team.html"
+    },
+    {
+      "text": "Server-Status",
+      "ziel": "server-status.html"
     }
   ],
   "regelwerke": [
