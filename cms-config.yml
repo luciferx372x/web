@@ -5,6 +5,11 @@ backend:
   name: github
   repo: luciferx372x/web
   branch: main
+  # Anmelde-Helfer fuer den Knopf "Mit GitHub anmelden" (kleiner Cloudflare-Dienst, siehe Ordner anmelde-helfer, ANLEITUNG.txt).
+  # Ohne diese Zeile will der Knopf zu Netlify und meldet "Not Found". Die Anmeldung mit Zugriffstoken geht in jedem Fall.
+  base_url: https://frankfurt-rp-anmeldung.fwagner372.workers.dev
+  # Das Repository ist oeffentlich, deshalb reicht die schmalere Berechtigung public_repo statt repo.
+  auth_scope: public_repo
 
 # Bilder, die in der Verwaltung hochgeladen werden (Website, Design), landen im Ordner bilder im Repository.
 # Die Standardbilder der Website liegen im Hauptordner und werden hier nicht benutzt.
@@ -376,6 +381,14 @@ collections:
               - { label: Bild, name: bild, widget: image, required: false, choose_url: false, hint: "Optional, am besten quer, zum Beispiel 1200 mal 600 Pixel, höchstens 1,5 MB." }
               - { label: Link, name: link, widget: string, required: false, pattern: ['^(https://[^ ]+)?$', 'Bitte mit https:// beginnen oder leer lassen.'], hint: "Optional, zum Beispiel ein Discord-Link." }
               - { label: Text auf dem Link-Knopf, name: link_text, widget: string, required: false, hint: "Zum Beispiel Zum Discord. Leer lassen = Mehr erfahren." }
+      - name: serverstatus
+        label: Server-Status (live)
+        file: serverstatus.json
+        fields:
+          - { label: Server-Status anzeigen, name: an, widget: boolean, default: false, hint: "Aus = Die Seite server-status.html sagt nur, dass der Status noch nicht freigeschaltet ist, und es wird nichts abgerufen. Erst einschalten, wenn der Statusdienst läuft und die Datenschutzerklärung mit dem Abschnitt „Server-Status“ veröffentlicht ist. Ins Hauptmenü kommt die Seite unter Menü, Fußzeile und Disclaimer: neuer Menüpunkt mit dem Ziel server-status.html." }
+          - { label: Überschrift, name: titel, widget: string, default: Server-Status }
+          - { label: Einleitung, name: einleitung, widget: text, required: false, hint: "Steht über der Statuskarte." }
+          - { label: Adresse des Statusdienstes, name: adresse, widget: string, required: false, pattern: ['^(https://[a-z0-9-]+\.fwagner372\.workers\.dev)?$', 'Bitte die Adresse vom Statusdienst bei Cloudflare eintragen, zum Beispiel https://frankfurt-rp-status.fwagner372.workers.dev (ohne Schrägstrich am Ende), oder leer lassen.'], hint: "Die Adresse, die Cloudflare dem Statusdienst gibt (Anleitung im Ordner status-dienst). Sie muss auf fwagner372.workers.dev enden, sonst blockiert die Sicherheitsregel der Seite den Abruf. Leer = es wird nichts angezeigt." }
 
   - name: eigene_seiten
     label: Eigene Seiten
