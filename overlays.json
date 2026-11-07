@@ -9,7 +9,7 @@
       "von": "",
       "bis": "",
       "staerke": "normal",
-      "aktiv": true
+      "aktiv": false
     },
     {
       "name": "Nikolaus",
@@ -72,7 +72,7 @@
       "von": "01.10.",
       "bis": "24.10.",
       "staerke": "viel",
-      "aktiv": false
+      "aktiv": true
     }
   ]
 }
