@@ -25,6 +25,18 @@
       "name": "Dome"
     },
     {
+      "rolle": "Moderator",
+      "name": "Gesucht"
+    },
+    {
+      "rolle": "Sozialmedia",
+      "name": "Gesucht"
+    },
+    {
+      "rolle": "Supporter",
+      "name": "Gesucht"
+    },
+    {
       "rolle": "Test Supporter",
       "name": "Christian"
     }
